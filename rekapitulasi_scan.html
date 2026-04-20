@@ -2,11 +2,11 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Rekapitulasi Hasil Scan | Medical Record</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="logorekammedis.ico">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Rekapitulasi Scan | Medical Record</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -17,221 +17,232 @@
   --card:#ffffff;
   --shadow:0 12px 30px rgba(0,0,0,.12);
 }
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
-body{background:var(--bg)}
+html,body{min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
 
 /* HEADER */
 header{background:linear-gradient(135deg,#ffffff,#e9f7f0);padding:15px 20px;box-shadow:var(--shadow)}
-.logo img{width:280px}
+.logo img{width:300px;height:70px}
 
-/* MAIN */
-main{padding:30px}
-
-/* TITLE */
-.page-title{
-  max-width:1100px;margin:auto;background:var(--card);
-  padding:25px;border-radius:20px;box-shadow:var(--shadow);
-  display:flex;align-items:center;gap:15px
-}
-.page-title i{font-size:35px;color:var(--green)}
-
-/* CARDS */
-.cards{
-  max-width:1100px;margin:20px auto;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
-.card{
-  background:var(--card);
-  padding:20px;border-radius:18px;
+.admin-btn{
+  margin-left:auto;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;padding:8px 18px;border-radius:30px;font-size:12px;
+  text-decoration:none;display:flex;align-items:center;gap:8px;
   box-shadow:var(--shadow);
 }
-.card h4{color:#777;font-size:13px}
-.card h1{color:var(--green);margin:10px 0;font-size:28px}
+.header-bar{display:flex;align-items:center;justify-content:space-between}
+
+/* NAV */
+nav ul{
+  list-style:none;display:flex;justify-content:center;gap:6px;
+  padding:10px;margin-top:15px;background:#fff;border-radius:50px;
+  box-shadow:var(--shadow)
+}
+nav ul li a{
+  text-decoration:none;color:#444;font-weight:600;font-size:14px;
+  border-radius:50px;padding:6px 16px;display:flex;gap:6px;
+}
+nav ul li a:hover{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff
+}
+
+/* MAIN */
+main{flex:1;padding:30px 20px}
+.content{
+  max-width:1300px;margin:auto;background:var(--card);
+  padding:30px;border-radius:22px;box-shadow:var(--shadow)
+}
+
+/* GRID */
+.layout{
+  display:grid;
+  grid-template-columns:1fr 300px;
+  gap:25px;
+}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}}
+
+/* CARD */
+.card{
+  background:#fff;padding:22px;border-radius:20px;
+  margin-bottom:25px;box-shadow:var(--shadow)
+}
+
+/* SUMMARY */
+.summary{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+}
+.box{
+  background:#f0fdf4;padding:20px;border-radius:15px;text-align:center
+}
+.box h2{color:#065f46}
 
 /* TABLE */
-.container{max-width:1100px;margin:auto}
-.actions{margin:15px 0;display:flex;gap:10px}
-
-button{
-  background:linear-gradient(135deg,var(--green),var(--green-dark));
-  border:none;color:#fff;padding:8px 16px;
-  border-radius:20px;cursor:pointer
-}
-
+.table-responsive{overflow-x:auto}
 table{
-  width:100%;border-collapse:collapse;background:#fff;
-  border-radius:12px;overflow:hidden;box-shadow:var(--shadow)
+  width:100%;border-collapse:collapse
 }
-th,td{padding:12px;text-align:center;border-bottom:1px solid #eee}
-th{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff}
+th{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;padding:10px
+}
+td{padding:10px;text-align:center;border-bottom:1px solid #eee}
 
-input{
-  padding:5px;border:1px solid #ccc;border-radius:6px
+/* SIDEBAR */
+.sidebar{
+  background:linear-gradient(180deg,#ffffff,#f0fdf4);
+  border-radius:20px;padding:22px;box-shadow:var(--shadow)
+}
+.sidebar h3{color:var(--green);margin-bottom:15px}
+.sidebar ul{list-style:none}
+.sidebar ul li a{
+  display:flex;gap:10px;padding:12px;margin-bottom:10px;
+  border-radius:14px;text-decoration:none;color:#333;
+  background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08)
+}
+.sidebar ul li a:hover{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff
 }
 
 /* CHART */
-.chart-box{
-  margin-top:25px;background:#fff;padding:20px;
-  border-radius:20px;box-shadow:var(--shadow)
-}
+.chart-box{height:400px}
+
+/* FOOTER */
+footer{background:#fff;padding:20px;text-align:center}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo"><img src="logopanjang.png"></div>
+  <div class="header-bar">
+    <div class="logo"><img src="logopanjang.png"></div>
+    <a href="admin_index.html" class="admin-btn">
+      <i class="fas fa-user-shield"></i> Admin
+    </a>
+  </div>
 </header>
 
 <main>
+<div class="content">
 
-<div class="page-title">
-  <i class="fas fa-barcode"></i>
-  <div>
-    <h2>Rekapitulasi Hasil Scan</h2>
-    <p>Dashboard input & sinkron Google Sheets</p>
+<h2 style="color:var(--green)">📊 Rekapitulasi Hasil Scan</h2>
+
+<div class="layout">
+
+<!-- MAIN -->
+<div>
+
+<!-- SUMMARY -->
+<div class="card">
+  <div class="summary">
+    <div class="box">
+      <p>Total Data</p>
+      <h2 id="totalData">0</h2>
+    </div>
+    <div class="box">
+      <p>Total Scan</p>
+      <h2 id="totalScan">0</h2>
+    </div>
+    <div class="box">
+      <p>Rata-rata</p>
+      <h2 id="avgScan">0</h2>
+    </div>
   </div>
 </div>
 
-<!-- CARDS -->
-<div class="cards">
-  <div class="card">
-    <h4>Total Data</h4>
-    <h1 id="totalData">0</h1>
-  </div>
-  <div class="card">
-    <h4>Total Scan</h4>
-    <h1 id="totalScan">0</h1>
-  </div>
-  <div class="card">
-    <h4>Rata-rata</h4>
-    <h1 id="avgScan">0</h1>
+<!-- TABLE -->
+<div class="card">
+  <h3>📋 Data Scan</h3>
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Jumlah</th>
+        </tr>
+      </thead>
+      <tbody id="tabelData"></tbody>
+    </table>
   </div>
 </div>
 
-<div class="container">
-
-<div class="actions">
-  <button onclick="tambahBaris()"><i class="fas fa-plus"></i> Tambah</button>
-  <button onclick="simpanData()"><i class="fas fa-save"></i> Simpan</button>
+<!-- CHART -->
+<div class="card">
+  <h3>📈 Grafik Scan</h3>
+  <div class="chart-box">
+    <canvas id="chart"></canvas>
+  </div>
 </div>
 
-<table>
-<thead>
-<tr>
-<th>Tanggal</th>
-<th>Jumlah</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="body"></tbody>
-</table>
-
-<div class="chart-box">
-<canvas id="chart"></canvas>
 </div>
 
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h3><i class="fas fa-list"></i> Menu</h3>
+  <ul>
+    <li><a href="imut.html"><i class="fas fa-chart-line"></i> Indikator Mutu</a></li>
+    <li><a href="indikatorbor.html"><i class="fas fa-bed"></i> BOR LOS TOI</a></li>
+    <li><a href="#"><i class="fas fa-barcode"></i> Rekap Scan</a></li>
+  </ul>
+</aside>
+
+</div>
 </div>
 </main>
 
-<script>
-const API_URL="https://script.google.com/macros/s/AKfycby5gOMpu6TB8ggex5TNkyz1wRP38SoGJbp4ZRE1dwKVzEM6j4_CxBYi7wa_O5hQNx1C/exec";
+<footer>
+<strong>MEDICAL RECORD</strong>
+<div>© 2026 RSU An'Nimah • Unit Rekam Medis</div>
+</footer>
 
-let data=[];
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbwMeifD27srfCcGsQd31MupVUDWdH1EowH4NksI_xc/dev";
 let chart;
 
-// load data
-function loadData(){
- fetch(API_URL,{
+fetch(API_URL,{
   method:"POST",
   body:JSON.stringify({action:"get"})
- })
- .then(res=>res.json())
- .then(res=>{
-  data=res;
-  renderTable();
- });
-}
+})
+.then(res=>res.json())
+.then(data=>{
+  let total=0;
+  let html="";
+  let labels=[],values=[];
 
-// save
-function simpanData(){
- fetch(API_URL,{
-  method:"POST",
-  body:JSON.stringify({action:"save",items:data})
- })
- .then(()=>alert("Data tersimpan ke Google Sheets"));
-}
+  data.forEach(d=>{
+    total+=Number(d.jumlah)||0;
+    html+=`<tr><td>${d.tanggal}</td><td>${d.jumlah}</td></tr>`;
+    labels.push(d.tanggal);
+    values.push(d.jumlah);
+  });
 
-// tambah
-function tambahBaris(){
- data.push({tanggal:"",jumlah:0});
- renderTable();
-}
+  tabelData.innerHTML=html;
 
-// hapus
-function hapusBaris(i){
- data.splice(i,1);
- renderTable();
-}
+  let totalData=data.length;
+  let avg= totalData?Math.round(total/totalData):0;
 
-// render
-function renderTable(){
- const body=document.getElementById("body");
- body.innerHTML="";
+  document.getElementById("totalData").innerText=totalData;
+  document.getElementById("totalScan").innerText=total;
+  document.getElementById("avgScan").innerText=avg;
 
- data.forEach((d,i)=>{
-  body.innerHTML+=`
-  <tr>
-    <td><input type="date" value="${d.tanggal}" onchange="updateData(${i},'tanggal',this.value)"></td>
-    <td><input type="number" value="${d.jumlah}" onchange="updateData(${i},'jumlah',this.value)"></td>
-    <td><button onclick="hapusBaris(${i})">Hapus</button></td>
-  </tr>`;
- });
-
- updateCards();
- renderChart();
-}
-
-// update
-function updateData(i,key,val){
- if(key==="jumlah") val=parseInt(val)||0;
- data[i][key]=val;
- updateCards();
- renderChart();
-}
-
-// cards
-function updateCards(){
- let totalData=data.length;
- let totalScan=data.reduce((s,d)=>s+(d.jumlah||0),0);
- let avg= totalData?Math.round(totalScan/totalData):0;
-
- document.getElementById("totalData").innerText=totalData;
- document.getElementById("totalScan").innerText=totalScan;
- document.getElementById("avgScan").innerText=avg;
-}
-
-// chart
-function renderChart(){
- let labels=data.map(d=>d.tanggal);
- let values=data.map(d=>d.jumlah);
-
- const ctx=document.getElementById("chart");
- if(chart) chart.destroy();
-
- chart=new Chart(ctx,{
-  type:"bar",
-  data:{
-    labels:labels,
-    datasets:[{data:values}]
-  }
- });
-}
-
-// init
-loadData();
+  chart=new Chart(document.getElementById("chart"),{
+    type:"bar",
+    data:{
+      labels:labels,
+      datasets:[{
+        label:"Jumlah Scan",
+        data:values,
+        backgroundColor:"rgba(47,163,107,0.6)"
+      }]
+    }
+  });
+});
 </script>
 
 </body>
