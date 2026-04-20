@@ -104,8 +104,16 @@ input{
   </div>
 
   <nav class="menu">
-    <a href="admin_index.html"><i class="fas fa-gauge"></i> Dashboard</a>
-    <a href="admin_rekapscan.html" class="active"><i class="fas fa-barcode"></i> Rekap Scan</a>
+     <a href="admin_index.html"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a class="active"><i class="fas fa-file-medical"></i> Regulasi</a>
+    <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan Pasien</a>
+    <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
+    <a href="admin_imut.html"><i class="fas fa-trash"></i> IMUT</a>
+    <a href="javascript:void(0)" class="menu-toggle" onclick="toggleImut()">
+        <i class="fas fa-chart-line"></i>
+        <span>Rekapitulasi Scan</span>
+        <i class="fas fa-chevron-down arrow" id="imutArrow"></i>
+      </a>
   </nav>
 </aside>
 
