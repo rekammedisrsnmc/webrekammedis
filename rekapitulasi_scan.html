@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rekapitulasi Hasil Scan | Medical Record</title>
+
+<link rel="icon" href="logorekammedis.ico">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --bg:#eef5f2;
+  --card:#ffffff;
+  --shadow:0 12px 30px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
+body{background:var(--bg)}
+
+/* HEADER */
+header{background:linear-gradient(135deg,#ffffff,#e9f7f0);padding:15px 20px;box-shadow:var(--shadow)}
+.logo img{width:280px}
+
+/* MAIN */
+main{padding:30px}
+
+/* TITLE */
+.page-title{
+  max-width:1100px;margin:auto;background:var(--card);
+  padding:25px;border-radius:20px;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:15px
+}
+.page-title i{font-size:35px;color:var(--green)}
+
+/* CARDS */
+.cards{
+  max-width:1100px;margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
+}
+.card{
+  background:var(--card);
+  padding:20px;border-radius:18px;
+  box-shadow:var(--shadow);
+}
+.card h4{color:#777;font-size:13px}
+.card h1{color:var(--green);margin:10px 0;font-size:28px}
+
+/* TABLE */
+.container{max-width:1100px;margin:auto}
+.actions{margin:15px 0;display:flex;gap:10px}
+
+button{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  border:none;color:#fff;padding:8px 16px;
+  border-radius:20px;cursor:pointer
+}
+
+table{
+  width:100%;border-collapse:collapse;background:#fff;
+  border-radius:12px;overflow:hidden;box-shadow:var(--shadow)
+}
+th,td{padding:12px;text-align:center;border-bottom:1px solid #eee}
+th{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff}
+
+input{
+  padding:5px;border:1px solid #ccc;border-radius:6px
+}
+
+/* CHART */
+.chart-box{
+  margin-top:25px;background:#fff;padding:20px;
+  border-radius:20px;box-shadow:var(--shadow)
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo"><img src="logopanjang.png"></div>
+</header>
+
+<main>
+
+<div class="page-title">
+  <i class="fas fa-barcode"></i>
+  <div>
+    <h2>Rekapitulasi Hasil Scan</h2>
+    <p>Dashboard input & sinkron Google Sheets</p>
+  </div>
+</div>
+
+<!-- CARDS -->
+<div class="cards">
+  <div class="card">
+    <h4>Total Data</h4>
+    <h1 id="totalData">0</h1>
+  </div>
+  <div class="card">
+    <h4>Total Scan</h4>
+    <h1 id="totalScan">0</h1>
+  </div>
+  <div class="card">
+    <h4>Rata-rata</h4>
+    <h1 id="avgScan">0</h1>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="actions">
+  <button onclick="tambahBaris()"><i class="fas fa-plus"></i> Tambah</button>
+  <button onclick="simpanData()"><i class="fas fa-save"></i> Simpan</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Jumlah</th>
+<th>Aksi</th>
+</tr>
+</thead>
+<tbody id="body"></tbody>
+</table>
+
+<div class="chart-box">
+<canvas id="chart"></canvas>
+</div>
+
+</div>
+</main>
+
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycby5gOMpu6TB8ggex5TNkyz1wRP38SoGJbp4ZRE1dwKVzEM6j4_CxBYi7wa_O5hQNx1C/exec";
+
+let data=[];
+let chart;
+
+// load data
+function loadData(){
+ fetch(API_URL,{
+  method:"POST",
+  body:JSON.stringify({action:"get"})
+ })
+ .then(res=>res.json())
+ .then(res=>{
+  data=res;
+  renderTable();
+ });
+}
+
+// save
+function simpanData(){
+ fetch(API_URL,{
+  method:"POST",
+  body:JSON.stringify({action:"save",items:data})
+ })
+ .then(()=>alert("Data tersimpan ke Google Sheets"));
+}
+
+// tambah
+function tambahBaris(){
+ data.push({tanggal:"",jumlah:0});
+ renderTable();
+}
+
+// hapus
+function hapusBaris(i){
+ data.splice(i,1);
+ renderTable();
+}
+
+// render
+function renderTable(){
+ const body=document.getElementById("body");
+ body.innerHTML="";
+
+ data.forEach((d,i)=>{
+  body.innerHTML+=`
+  <tr>
+    <td><input type="date" value="${d.tanggal}" onchange="updateData(${i},'tanggal',this.value)"></td>
+    <td><input type="number" value="${d.jumlah}" onchange="updateData(${i},'jumlah',this.value)"></td>
+    <td><button onclick="hapusBaris(${i})">Hapus</button></td>
+  </tr>`;
+ });
+
+ updateCards();
+ renderChart();
+}
+
+// update
+function updateData(i,key,val){
+ if(key==="jumlah") val=parseInt(val)||0;
+ data[i][key]=val;
+ updateCards();
+ renderChart();
+}
+
+// cards
+function updateCards(){
+ let totalData=data.length;
+ let totalScan=data.reduce((s,d)=>s+(d.jumlah||0),0);
+ let avg= totalData?Math.round(totalScan/totalData):0;
+
+ document.getElementById("totalData").innerText=totalData;
+ document.getElementById("totalScan").innerText=totalScan;
+ document.getElementById("avgScan").innerText=avg;
+}
+
+// chart
+function renderChart(){
+ let labels=data.map(d=>d.tanggal);
+ let values=data.map(d=>d.jumlah);
+
+ const ctx=document.getElementById("chart");
+ if(chart) chart.destroy();
+
+ chart=new Chart(ctx,{
+  type:"bar",
+  data:{
+    labels:labels,
+    datasets:[{data:values}]
+  }
+ });
+}
+
+// init
+loadData();
+</script>
+
+</body>
+</html>
