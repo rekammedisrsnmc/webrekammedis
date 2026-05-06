@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" href="logorekammedis.ico">
+<title>Permintaan Laporan Wajib | Medical Record</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --bg:#eef5f2;
+  --card:#ffffff;
+  --shadow:0 12px 30px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
+body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+
+header{background:linear-gradient(135deg,#fff,#e9f7f0);padding:15px 20px;box-shadow:var(--shadow)}
+.logo{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.logo img{width:300px;height:70px}
+.admin-btn{
+  margin-left:auto;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  padding:8px 18px;
+  border-radius:30px;
+  font-size:12px;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  box-shadow:var(--shadow);
+  transition:.3s;
+}
+.admin-btn:hover{transform:translateY(-2px)}
+
+nav ul{
+  list-style:none;display:flex;justify-content:center;flex-wrap:wrap;
+  gap:6px;padding:10px;margin-top:15px;
+  background:#fff;border-radius:50px;box-shadow:var(--shadow)
+}
+nav ul li a{
+  text-decoration:none;color:#444;font-weight:600;font-size:14px;
+  border-radius:50px;padding:6px 16px;
+  display:flex;align-items:center;gap:6px;transition:.3s
+}
+nav ul li a:hover{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff
+}
+
+main{flex:1;padding:40px 20px}
+
+.container{max-width:1200px;margin:auto;
+animation:fadeUp .6s ease;
+}
+
+.title-container{
+  background:#fff;border-radius:22px;padding:30px;
+  box-shadow:var(--shadow);display:flex;gap:20px;
+  align-items:center;margin-bottom:40px
+}
+.title-icon{font-size:40px;color:var(--green)}
+.title-text h1{font-size:32px;color:var(--green-dark)}
+.title-text p{margin-top:6px;color:#555}
+
+.card{
+  background:#fff;border-radius:22px;padding:30px;
+  box-shadow:var(--shadow);margin-bottom:30px
+}
+.card h2{color:var(--green);margin-bottom:20px}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 2fr auto;
+  gap:14px;
+  align-items:start
+}
+.form-grid input,
+.form-grid textarea{
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+textarea{
+  min-height:180px;
+  resize:vertical;
+  line-height:1.6
+}
+.btn{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;border:none;
+  padding:14px 26px;border-radius:30px;
+  font-weight:600;cursor:pointer;
+  box-shadow:var(--shadow);
+  transition:.3s
+}
+.btn:hover{transform:translateY(-3px)}
+
+.asuransi-item{
+  border:1px solid #e5e5e5;
+  border-radius:18px;
+  margin-bottom:14px;
+  overflow:hidden
+}
+.asuransi-header{
+  padding:16px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+  background:#f9fdfb
+}
+.asuransi-header h3{
+  font-size:16px;
+  color:var(--green-dark)
+}
+.asuransi-header a{
+  font-size:13px;
+  color:var(--green);
+  text-decoration:none
+}
+.asuransi-steps{
+  display:none;
+  padding:20px;
+  background:#fff
+}
+.asuransi-steps pre{
+  white-space:pre-wrap;
+  line-height:1.8;
+  font-size:14px;
+}
+/* DROPDOWN */
+.dropdown-hubungi{position:relative}
+.dropdown-content-hubungi{
+  display:none;
+  position:absolute;
+  background:#fff;
+  min-width:180px;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  z-index:9;
+}
+.dropdown-content-hubungi a{
+  padding:10px 15px;
+  display:block;
+  font-size: 14px;
+  color:#333;
+  text-decoration:none;
+}
+.dropdown-content-hubungi a:hover{
+  background:#e9f7f0;
+  color:var(--green-dark);
+}
+.dropdown-hubungi:hover .dropdown-content-hubungi{display:block}
+footer{
+  background:#fff;padding:30px 20px;
+  box-shadow:var(--shadow)
+}
+.small{font-size:14px;color:#666}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1}
+}
+
+@media (max-width: 768px) {
+  .form-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid input,
+  .form-grid textarea,
+  .form-grid button{
+    width: 100%;
+  }
+
+  textarea{
+    min-height:160px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    <img src="logopanjang.png">
+    <a href="admin_index.html" class="admin-btn">
+      <i class="fas fa-user-shield"></i> Admin Dashboard
+    </a>
+  </div>
+
+  <nav>
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> BERANDA</a></li>
+      <li><a href="profil.html"><i class="fas fa-user-circle"></i> PROFIL</a></li>
+      <li><a href="regulasi.html"><i class="fas fa-swatchbook"></i> REGULASI</a></li>
+      <li><a href="informasi.html"><i class="fas fa-info-circle"></i> INFORMASI</a></li>
+      <li><a href="layanan.html"><i class="fas fa-headset"></i> LAYANAN INTERNAL</a></li>
+      <li><a href="indikator.html"><i class="fas fa-chart-line"></i> INDIKATOR</a></li>
+      <li><a href="laporan.html"><i class="fas fa-database"></i> LAPORAN</a></li>
+      <li><a href="kegiatan.html"><i class="fas fa-calendar-check"></i> KEGIATAN</a></li>
+      <li class="dropdown-hubungi">
+          <a class="dropbtn-hubungi"><i class="fas fa-phone"></i> HUBUNGI KAMI <i class="fas fa-caret-down"></i></a>
+          <div class="dropdown-content-hubungi">
+            <a href="#"><i class="fas fa-envelope"></i> Email</a>
+            <a href="#"><i class="fas fa-phone"></i> Telepon</a>
+            <a href="https://wa.me/6283153300859"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            <a href="#"><i class="fas fa-map-marker-alt"></i> Alamat</a>
+          </div>
+        </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<div class="container">
+
+<div class="title-container">
+  <div class="title-icon"><i class="fas fa-clipboard-list"></i></div>
+  <div class="title-text">
+    <h1>Permintaan Laporan Wajib</h1>
+    <p>Daftar laporan yang wajib dikerjakan setiap awal bulan dan sebelum tanggal 5</p>
+  </div>
+</div>
+
+<div class="card">
+<h2><i class="fas fa-pen"></i> Input Daftar Laporan</h2>
+<div class="form-grid">
+  <input id="nama" placeholder="Judul laporan">
+  <input id="link" placeholder="Link Laporan">
+  <textarea id="langkah" placeholder="Tambahkan keterangan kalo ada "></textarea>
+  <button class="btn" onclick="simpan()">Simpan</button>
+</div>
+</div>
+
+<div class="card">
+<h2><i class="fas fa-list"></i> Daftar Laporan</h2>
+<div id="list"></div>
+</div>
+
+</div>
+</main>
+
+<footer>
+<strong>MEDICAL RECORD</strong>
+<div class="small">© 2025 RSU An'Nimah • Unit Rekam Medis</div>
+</footer>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzDzBiQWLVkPev5tXVx5MTLA_Ly0EtTgSVyiEjQ680-aHXMW87b55Wrts5WtfcTgQvJTg/exec";
+let data = {};
+
+function simpan(){
+  const n = nama.value.trim();
+  const l = link.value.trim();
+  const steps = langkah.value.trim();
+
+  if(!n || !steps){
+    alert("Nama & langkah wajib diisi");
+    return;
+  }
+
+  fetch(`${API_URL}?action=add&nama=${encodeURIComponent(n)}&link=${encodeURIComponent(l)}&langkah=${encodeURIComponent(steps)}`)
+    .then(()=>{
+      nama.value=""; link.value=""; langkah.value="";
+      load();
+    });
+}
+
+function load(){
+  fetch(`${API_URL}?action=get`)
+    .then(r=>r.json())
+    .then(d=>{
+      data = {};
+      d.forEach(r=>{
+        data[r[0]] = { link:r[1], steps:r[2] };
+      });
+      render();
+    });
+}
+
+function render(){
+  const box=document.getElementById("list");
+  box.innerHTML="";
+  Object.keys(data).forEach(n=>{
+    box.innerHTML+=`
+      <div class="asuransi-item">
+        <div class="asuransi-header" onclick="toggle(this)">
+          <h3>${n}</h3>
+          <a href="${data[n].link}" target="_blank">Link Laporan</a>
+        </div>
+        <div class="asuransi-steps">
+          <pre>${data[n].steps}</pre>
+        </div>
+      </div>`;
+  });
+}
+
+function toggle(el){
+  const box=el.nextElementSibling;
+  box.style.display = box.style.display==="block" ? "none" : "block";
+}
+
+window.onload=load;
+</script>
+
+</body>
+</html>
