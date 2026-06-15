@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Arsip Pasien Inaktif | Google Spreadsheet</title>
+    <title>Arsip Pasien Inaktif | Google Sheet</title>
     <style>
         * {
             margin: 0;
@@ -11,590 +11,158 @@
             box-sizing: border-box;
             font-family: system-ui, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
         }
-
         body {
             background: linear-gradient(145deg, #eef2f7 0%, #dce5ec 100%);
             min-height: 100vh;
             padding: 2rem 1.5rem;
         }
-
-        .dashboard {
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* login overlay */
+        .dashboard { max-width: 1400px; margin: 0 auto; width: 100%; }
+        
         .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; z-index: 2000;
         }
-
         .login-card {
-            background: white;
-            border-radius: 2rem;
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            background: white; border-radius: 2rem; padding: 2rem;
+            width: 90%; max-width: 400px; box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
-
-        .login-card h2 {
-            color: #1e3a5f;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
+        .login-card h2 { color: #1e3a5f; margin-bottom: 1.5rem; text-align: center; }
         .login-card input {
-            width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 1rem;
-            border: 1px solid #cbdbe0;
-            border-radius: 40px;
-            font-size: 0.9rem;
+            width: 100%; padding: 12px 16px; margin-bottom: 1rem;
+            border: 1px solid #cbdbe0; border-radius: 40px; font-size: 0.9rem;
         }
-
         .login-card button {
-            width: 100%;
-            padding: 12px;
-            background: #1e5f7a;
-            color: white;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1rem;
+            width: 100%; padding: 12px; background: #1e5f7a; color: white;
+            border: none; border-radius: 40px; font-weight: 600; cursor: pointer;
         }
-
-        .login-card button:hover {
-            background: #0e4b63;
-        }
-
-        .login-error {
-            color: #d9534f;
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        /* form card */
+        .login-error { color: #d9534f; font-size: 0.8rem; text-align: center; margin-top: 10px; }
+        
         .form-card {
-            background: white;
-            border-radius: 2rem;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
-            margin-bottom: 2rem;
-            overflow: hidden;
+            background: white; border-radius: 2rem; box-shadow: 0 20px 35px -12px rgba(0,0,0,0.15);
+            margin-bottom: 2rem; overflow: hidden;
         }
-
         .form-header {
-            background: #1e3a5f;
-            padding: 1.3rem 2rem;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            background: #1e3a5f; padding: 1.3rem 2rem; color: white;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
         }
-
-        .form-header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .form-header h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
         .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
+            background: rgba(255,255,255,0.2); border: none; color: white;
+            padding: 8px 20px; border-radius: 40px; cursor: pointer;
         }
-
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.35);
-        }
-
         .scan-identity {
-            background: #f0f6fa;
-            border-left: 5px solid #2c7da0;
-            padding: 0.8rem 1.8rem;
-            margin: 1.2rem 1.8rem 0 1.8rem;
-            border-radius: 1rem;
-            display: flex;
+            background: #f0f6fa; border-left: 5px solid #2c7da0;
+            padding: 0.8rem 1.8rem; margin: 1.2rem 1.8rem 0 1.8rem;
+            border-radius: 1rem; display: flex; justify-content: space-between; align-items: center;
             flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
         }
-
-        .petugas-label {
-            font-weight: 600;
-            color: #0b3b4f;
-            background: #e2eef6;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-        }
-
-        .petugas-name {
-            font-weight: 700;
-            font-size: 1rem;
-            color: #0a2f44;
-            background: white;
-            padding: 6px 20px;
-            border-radius: 40px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .sync-status {
-            font-size: 0.7rem;
-            background: #e8f5e9;
-            padding: 4px 12px;
-            border-radius: 30px;
-            color: #2e7d32;
-        }
-
-        form {
-            padding: 1.8rem 2rem 1.5rem 2rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.3rem 1.8rem;
-        }
-
-        .full-width {
-            grid-column: span 2;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .input-group label {
-            font-weight: 600;
-            color: #1e3a5f;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .required:after {
-            content: "*";
-            color: #d9534f;
-            margin-left: 4px;
-        }
-
+        .petugas-label { font-weight: 600; background: #e2eef6; padding: 6px 16px; border-radius: 40px; }
+        .petugas-name { font-weight: 700; background: white; padding: 6px 20px; border-radius: 40px; }
+        .sync-status { font-size: 0.7rem; background: #e8f5e9; padding: 4px 12px; border-radius: 30px; color: #2e7d32; }
+        
+        form { padding: 1.8rem 2rem 1.5rem 2rem; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.3rem 1.8rem; }
+        .full-width { grid-column: span 2; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-weight: 600; color: #1e3a5f; font-size: 0.85rem; }
+        .required:after { content: "*"; color: #d9534f; margin-left: 4px; }
         input, textarea {
-            border: 1px solid #cbdbe0;
-            border-radius: 14px;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            background: #fefefe;
-            outline: none;
-            width: 100%;
+            border: 1px solid #cbdbe0; border-radius: 14px; padding: 10px 14px;
+            font-size: 0.9rem; width: 100%;
         }
-
-        input:focus, textarea:focus {
-            border-color: #2c7da0;
-            box-shadow: 0 0 0 3px rgba(44,125,160,0.15);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 70px;
-        }
-
+        textarea { resize: vertical; min-height: 70px; }
         .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 1.8rem;
-            border-top: 1px solid #e2edf2;
-            padding-top: 1.5rem;
+            display: flex; justify-content: flex-end; gap: 1rem;
+            margin-top: 1.8rem; border-top: 1px solid #e2edf2; padding-top: 1.5rem;
         }
-
         .btn {
-            border: none;
-            padding: 10px 28px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.2s;
+            border: none; padding: 10px 28px; border-radius: 40px;
+            font-weight: 600; font-size: 0.85rem; cursor: pointer;
         }
-
-        .btn-primary {
-            background: #1e5f7a;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #0e4b63;
-        }
-
-        .btn-secondary {
-            background: #eef2f7;
-            border: 1px solid #ccd7e4;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-
-        /* filter bar */
+        .btn-primary { background: #1e5f7a; color: white; }
+        .btn-primary:hover { background: #0e4b63; }
+        
         .filter-bar {
-            background: white;
-            border-radius: 1.5rem;
-            margin-bottom: 1.5rem;
-            padding: 1.2rem 1.8rem;
-            display: flex;
-            flex-wrap: wrap;
+            background: white; border-radius: 1.5rem; margin-bottom: 1.5rem;
+            padding: 1.2rem 1.8rem; display: flex; flex-wrap: wrap; gap: 1.2rem;
             align-items: flex-end;
-            gap: 1.2rem;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
         }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .filter-group label {
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: #2c5a74;
-        }
-
-        .filter-group input {
-            padding: 8px 12px;
-            border-radius: 40px;
-            border: 1px solid #cbdbe0;
-        }
-
+        .filter-group { display: flex; flex-direction: column; gap: 6px; }
+        .filter-group label { font-weight: 600; font-size: 0.75rem; color: #2c5a74; }
+        .filter-group input { padding: 8px 12px; border-radius: 40px; border: 1px solid #cbdbe0; }
         .btn-filter {
-            background: #1e5f7a;
-            color: white;
-            border: none;
-            padding: 8px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
+            background: #1e5f7a; color: white; border: none;
+            padding: 8px 24px; border-radius: 40px; cursor: pointer;
         }
-
-        .btn-filter:hover {
-            background: #0e4b63;
-        }
-
-        .reset-filter {
-            background: #eef2f7;
-            color: #2c5a74;
-            border: 1px solid #cbdbe0;
-        }
-
-        .reset-filter:hover {
-            background: #e2e8f0;
-        }
-
-        /* tabel */
+        .reset-filter { background: #eef2f7; color: #2c5a74; border: 1px solid #cbdbe0; }
+        
         .table-container {
-            background: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+            background: white; border-radius: 1.5rem; box-shadow: 0 12px 28px rgba(0,0,0,0.08);
             overflow-x: auto;
         }
-
         .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 1.2rem 1.8rem;
-            border-bottom: 1px solid #e4edf2;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.2rem 1.8rem; border-bottom: 1px solid #e4edf2;
         }
-
-        .table-header h2 {
-            font-size: 1.4rem;
-            color: #1e3a5f;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .badge-count {
-            background: #1e5f7a20;
-            color: #1e5f7a;
-            border-radius: 40px;
-            padding: 4px 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-            min-width: 1100px;
-        }
-
-        th {
-            text-align: left;
-            padding: 1rem 1rem;
-            background-color: #f8fafc;
-            color: #2c3e66;
-            font-weight: 600;
-            border-bottom: 1px solid #e2edf2;
-        }
-
-        td {
-            padding: 0.9rem 1rem;
-            border-bottom: 1px solid #ecf3f8;
-            vertical-align: middle;
-            color: #1f2e45;
-        }
-
-        tr:hover td {
-            background-color: #fafdff;
-        }
-
-        .empty-row td {
-            text-align: center;
-            padding: 2rem;
-            color: #8ba0b0;
-            font-style: italic;
-        }
-
-        /* dropdown aksi */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
+        .table-header h2 { font-size: 1.4rem; color: #1e3a5f; display: flex; gap: 10px; }
+        .badge-count { background: #1e5f7a20; color: #1e5f7a; border-radius: 40px; padding: 4px 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 1100px; }
+        th { text-align: left; padding: 1rem; background: #f8fafc; border-bottom: 1px solid #e2edf2; }
+        td { padding: 0.9rem 1rem; border-bottom: 1px solid #ecf3f8; }
+        
+        .dropdown { position: relative; display: inline-block; }
         .btn-aksi {
-            background: #1e5f7a;
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.2s;
+            background: #1e5f7a; color: white; border: none; padding: 6px 16px;
+            border-radius: 30px; font-size: 0.75rem; cursor: pointer;
         }
-
-        .btn-aksi:hover {
-            background: #0e4b63;
-        }
-
         .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background-color: white;
-            min-width: 100px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-            border-radius: 12px;
-            z-index: 100;
-            overflow: hidden;
-            margin-top: 5px;
+            display: none; position: absolute; right: 0; top: 100%;
+            background: white; min-width: 100px; border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15); z-index: 100;
         }
-
-        .dropdown-content.show {
-            display: block;
-        }
-
+        .dropdown-content.show { display: block; }
         .dropdown-content button {
-            width: 100%;
-            padding: 10px 16px;
-            text-align: left;
-            border: none;
-            background: white;
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: 0.1s;
+            width: 100%; padding: 10px 16px; text-align: left;
+            border: none; background: white; cursor: pointer;
         }
-
-        .dropdown-content button:hover {
-            background-color: #f0f6fa;
-        }
-
-        .dropdown-content .edit-option {
-            color: #2c7da0;
-            border-bottom: 1px solid #eef2f7;
-        }
-
-        .dropdown-content .delete-option {
-            color: #c75c5c;
-        }
-
-        .dropdown-content .delete-option:hover {
-            background-color: #fee2e2;
-        }
-
-        .no-col {
-            width: 60px;
-            text-align: center;
-            font-weight: 500;
-            color: #6f8eaa;
-        }
-
-        /* modal edit */
+        .dropdown-content .edit-option { color: #2c7da0; border-bottom: 1px solid #eef2f7; }
+        .dropdown-content .delete-option { color: #c75c5c; }
+        .no-col { width: 60px; text-align: center; }
+        
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 3000; justify-content: center; align-items: center;
         }
-
-        .modal.show {
-            display: flex;
-        }
-
+        .modal.show { display: flex; }
         .modal-content {
-            background: white;
-            border-radius: 2rem;
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            background: white; border-radius: 2rem; width: 90%; max-width: 700px;
+            max-height: 85vh; overflow-y: auto;
         }
-
         .modal-header {
-            background: #1e3a5f;
-            color: white;
-            padding: 1.2rem 1.8rem;
-            border-radius: 2rem 2rem 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #1e3a5f; color: white; padding: 1.2rem 1.8rem;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .modal-header h3 {
-            font-size: 1.2rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .modal-body {
-            padding: 1.8rem;
-        }
-
-        .modal-footer {
-            padding: 1rem 1.8rem 1.8rem;
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            border-top: 1px solid #e2edf2;
-        }
-
-        .btn-simpan {
-            background: #1e5f7a;
-            color: white;
-        }
-
-        .btn-batal {
-            background: #eef2f7;
-            border: 1px solid #cbdbe0;
-        }
-
+        .close-modal { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .modal-body { padding: 1.8rem; }
+        .modal-footer { padding: 1rem 1.8rem 1.8rem; display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid #e2edf2; }
+        .btn-simpan { background: #1e5f7a; color: white; }
+        .btn-batal { background: #eef2f7; border: 1px solid #cbdbe0; }
+        
         .loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px 40px;
-            border-radius: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 5000;
-            font-weight: 600;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 20px 40px; border-radius: 40px; z-index: 5000;
         }
-
         .toast-message {
-            position: fixed;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1f2c38e6;
-            backdrop-filter: blur(8px);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 60px;
-            font-size: 0.85rem;
-            z-index: 4000;
-            opacity: 0;
-            transition: 0.2s;
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            background: #1f2c38e6; color: white; padding: 10px 24px;
+            border-radius: 60px; z-index: 4000; opacity: 0; transition: 0.2s;
             pointer-events: none;
         }
-
-        .toast-message.show {
-            opacity: 1;
-        }
-
-        @media (max-width: 780px) {
-            body {
-                padding: 1rem;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .full-width {
-                grid-column: span 1;
-            }
-            .filter-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-
-        .info-autotime {
-            background: #eef3fa;
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            color: #1e5f7a;
-            display: inline-block;
-            margin-top: 8px;
-        }
+        .toast-message.show { opacity: 1; }
+        @media (max-width: 780px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
+        .info-autotime { background: #eef3fa; border-radius: 20px; padding: 4px 12px; font-size: 0.7rem; display: inline-block; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -603,7 +171,6 @@
 <div id="toast" class="toast-message"></div>
 <div id="loadingIndicator" style="display:none;" class="loading">⏳ Memuat data...</div>
 
-<!-- MODAL EDIT -->
 <div id="editModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -612,387 +179,296 @@
         </div>
         <div class="modal-body">
             <div class="form-grid">
-                <div class="input-group">
-                    <label class="required">No. Rekam Medis (RM)</label>
-                    <input type="text" id="edit_noRm" placeholder="Contoh: RM-2409-001">
-                </div>
-                <div class="input-group">
-                    <label class="required">Nama Lengkap Pasien</label>
-                    <input type="text" id="edit_namaPasien" placeholder="Nama lengkap">
-                </div>
-                <div class="input-group full-width">
-                    <label class="required">Diagnosa Akhir</label>
-                    <input type="text" id="edit_diagnosaAkhir" placeholder="Diagnosa utama">
-                </div>
-                <div class="input-group full-width">
-                    <label>Alamat Lengkap</label>
-                    <textarea id="edit_alamat" rows="2" placeholder="Jalan, RT/RW, Kelurahan, Kecamatan"></textarea>
-                </div>
-                <div class="input-group">
-                    <label class="required">Kunjungan Terakhir</label>
-                    <input type="text" id="edit_kunjunganTerakhir" placeholder="contoh: 20 Maret 2026">
-                </div>
-                <div class="input-group">
-                    <label>Keterangan Tambahan</label>
-                    <input type="text" id="edit_keterangan" placeholder="Alasan inaktif / pindah">
-                </div>
+                <div class="input-group"><label class="required">No. RM</label><input type="text" id="edit_noRm"></div>
+                <div class="input-group"><label class="required">Nama Pasien</label><input type="text" id="edit_namaPasien"></div>
+                <div class="input-group full-width"><label class="required">Diagnosa Akhir</label><input type="text" id="edit_diagnosaAkhir"></div>
+                <div class="input-group full-width"><label>Alamat</label><textarea id="edit_alamat" rows="2"></textarea></div>
+                <div class="input-group"><label class="required">Kunjungan Terakhir</label><input type="text" id="edit_kunjunganTerakhir"></div>
+                <div class="input-group"><label>Keterangan</label><input type="text" id="edit_keterangan"></div>
             </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-batal" id="modalBatalBtn">Batal</button>
-            <button class="btn btn-simpan" id="modalSimpanBtn">Simpan Perubahan</button>
+            <button class="btn btn-simpan" id="modalSimpanBtn">Simpan</button>
         </div>
     </div>
 </div>
 
 <script>
     // ======================= KONFIGURASI =======================
-    // GANTI URL INI DENGAN URL APPS SCRIPT ANDA SETELAH DEPLOY!
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxW7iO29kIWkpasW9BLD7IJQhDCOd6yzl8xVsFIC03wGUxCLkfmmmWxsTOYfyrqdYqf/exec";
+    // 🔴🔴🔴 GANTI URL INI DENGAN URL APPS SCRIPT HASIL DEPLOY ANDA! 🔴🔴🔴
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQabvUxROlHOq5FAHlHpszs7dbgSKSLk1EezrPPDmWLoyqMHv6lnfqHQFTjq4MFfjn/exec";
     
     const VALID_USERS = [
         { username: "admin", password: "admin123", fullName: "Administrator", role: "Supervisor" },
         { username: "petugas", password: "scan123", fullName: "Petugas Scan", role: "Petugas Rekam Medis" },
-        { username: "dokter", password: "dokter123", fullName: "dr. Andini", role: "Dokter" },
         { username: "sakinah", password: "123", fullName: "Sakinah", role: "Petugas Arsip" }
     ];
     
     let currentUser = null;
     let pasienData = [];
     let editModeId = null;
-    let currentFilterStart = "";
-    let currentFilterEnd = "";
     
-    let appContainer;
-    let toastEl;
-    let editModal;
-    let loadingDiv;
+    let appContainer, toastEl, editModal, loadingDiv;
     
-    function showLoading(show) {
-        if (loadingDiv) loadingDiv.style.display = show ? "flex" : "none";
-    }
-    
+    function showLoading(show) { if(loadingDiv) loadingDiv.style.display = show ? "flex" : "none"; }
     function showToast(msg, isError = false) {
-        if (!toastEl) return;
+        if(!toastEl) return;
         toastEl.textContent = msg;
         toastEl.classList.add('show');
         toastEl.style.backgroundColor = isError ? "#b3413be6" : "#1f2c38e6";
         setTimeout(() => toastEl.classList.remove('show'), 2500);
     }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
     
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
+    // ======================= JSONP LOAD DATA =======================
+    function loadDataWithJsonp() {
+        return new Promise((resolve, reject) => {
+            const callbackName = "jsonpCallback_" + Date.now();
+            const script = document.createElement('script');
+            const url = `${APPS_SCRIPT_URL}?t=${Date.now()}&callback=${callbackName}`;
+            
+            window[callbackName] = function(response) {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                if (response && response.success) {
+                    pasienData = response.data || [];
+                    resolve(true);
+                } else {
+                    reject(response?.error || "Gagal load data");
+                }
+            };
+            
+            script.onerror = function() {
+                delete window[callbackName];
+                document.body.removeChild(script);
+                reject("Network error: Failed to fetch");
+            };
+            
+            script.src = url;
+            document.body.appendChild(script);
         });
     }
     
-    // ======================= APPS SCRIPT API =======================
-    async function callAppsScript(action, data = {}) {
+    async function loadData() {
         try {
             showLoading(true);
-            const payload = { action, ...data };
+            await loadDataWithJsonp();
+            showLoading(false);
+            console.log("Data loaded:", pasienData.length);
+            return true;
+        } catch (err) {
+            showLoading(false);
+            console.error("Load error:", err);
+            showToast("Gagal load data: " + err, true);
+            pasienData = [];
+            return false;
+        }
+    }
+    
+    // ======================= POST DATA (save/update/delete) =======================
+    async function postData(action, record = null) {
+        try {
+            showLoading(true);
+            const payload = { action };
+            if (record) payload.record = record;
             
-            // Coba dengan mode no-cors untuk menghindari CORS
             const response = await fetch(APPS_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'cors',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ data: JSON.stringify(payload) })
             });
-            
+            const result = await response.json();
             showLoading(false);
-            
-            // Karena mode no-cors tidak bisa baca response, kita asumsikan sukses
-            // Tapi perlu penanganan khusus
-            return { success: true, data: [] };
-        } catch (error) {
+            return result.success;
+        } catch (err) {
             showLoading(false);
-            console.error("Apps Script Error:", error);
-            return { success: false, error: error.message };
-        }
-    }
-    
-    // Load data dari Apps Script dengan fallback ke localStorage
-    async function loadDataFromServer() {
-        try {
-            // Coba fetch langsung dengan JSONP style
-            const response = await fetch(APPS_SCRIPT_URL + "?action=getAll", {
-                method: 'GET',
-                mode: 'cors'
-            });
-            
-            if (response.ok) {
-                const result = await response.json();
-                if (result.success && result.data) {
-                    pasienData = result.data;
-                    localStorage.setItem('pasien_inaktif_data', JSON.stringify(pasienData));
-                    return true;
-                }
-            }
-            throw new Error("Gagal fetch");
-        } catch (error) {
-            console.warn("Gagal konek ke server, pakai localStorage:", error);
-            // Fallback ke localStorage
-            const stored = localStorage.getItem('pasien_inaktif_data');
-            if (stored) {
-                try {
-                    pasienData = JSON.parse(stored);
-                } catch(e) { pasienData = []; }
-            } else {
-                pasienData = [];
-            }
-            showToast("⚠️ Menggunakan data lokal (koneksi ke server gagal)", true);
+            console.error("Post error:", err);
+            showToast("Error: " + err.message, true);
             return false;
         }
     }
     
-    // Simpan data ke server via fetch
-    async function saveToServer(record, isUpdate = false) {
-        try {
-            const action = isUpdate ? "update" : "save";
-            const formData = new URLSearchParams();
-            formData.append('data', JSON.stringify({ action, record }));
-            
-            const response = await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formData
-            });
-            
-            // Karena no-cors, kita asumsikan sukses dan refresh data
-            await loadDataFromServer();
-            return true;
-        } catch (error) {
-            console.error("Save error:", error);
-            showToast("Gagal menyimpan ke server: " + error.message, true);
-            return false;
-        }
+    async function saveData(record, isUpdate = false) {
+        return await postData(isUpdate ? "update" : "save", record);
     }
     
-    // Hapus data dari server
-    async function deleteFromServer(id) {
-        try {
-            const formData = new URLSearchParams();
-            formData.append('data', JSON.stringify({ action: "delete", id }));
-            
-            await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: formData
-            });
-            
-            await loadDataFromServer();
-            return true;
-        } catch (error) {
-            console.error("Delete error:", error);
-            showToast("Gagal menghapus dari server: " + error.message, true);
-            return false;
-        }
+    async function deleteData(id) {
+        return await postData("delete", null, id);
     }
     
-    // ======================= RENDER DASHBOARD =======================
-    function renderDashboard() {
+    // ======================= RENDER =======================
+    function render() {
         if (!currentUser) {
             renderLogin();
             return;
         }
         
-        const today = new Date().toISOString().split('T')[0];
-        if (!currentFilterStart) currentFilterStart = today;
-        if (!currentFilterEnd) currentFilterEnd = today;
-        
-        let filtered = pasienData.filter(item => {
-            if (!item.tglInput) return true;
-            if (currentFilterStart && item.tglInput < currentFilterStart) return false;
-            if (currentFilterEnd && item.tglInput > currentFilterEnd) return false;
-            return true;
-        });
-        
-        filtered.sort((a, b) => (b.id || 0) - (a.id || 0));
-        
-        const formHtml = `
+        const html = `
             <div class="dashboard">
                 <div class="form-card">
                     <div class="form-header">
                         <h1>📦 Arsip Berkas Pasien INAKTIF</h1>
-                        <div style="display: flex; gap: 10px;">
-                            <span class="sync-status">☁️ Tersimpan di Google Spreadsheet</span>
+                        <div style="display:flex;gap:10px;">
+                            <span class="sync-status">☁️ Google Spreadsheet</span>
                             <button class="logout-btn" id="logoutBtn">🚪 Logout (${currentUser.fullName})</button>
                         </div>
                     </div>
                     <div class="scan-identity">
-                        <div class="petugas-label">🧑‍⚕️ Petugas Scan / Verifikator</div>
+                        <div class="petugas-label">🧑‍⚕️ Petugas Scan</div>
                         <div class="petugas-name">${currentUser.fullName} (${currentUser.role})</div>
                     </div>
-                    <form id="pasienForm">
+                    <form id="mainForm">
                         <div class="form-grid">
-                            <div class="input-group">
-                                <label class="required">📇 No. Rekam Medis (RM)</label>
-                                <input type="text" id="noRm" placeholder="Contoh: RM-2409-001" autocomplete="off">
-                            </div>
-                            <div class="input-group">
-                                <label class="required">👤 Nama Lengkap Pasien</label>
-                                <input type="text" id="namaPasien" placeholder="Nama lengkap">
-                            </div>
-                            <div class="input-group full-width">
-                                <label class="required">🩺 Diagnosa Akhir</label>
-                                <input type="text" id="diagnosaAkhir" placeholder="Diagnosa utama">
-                            </div>
-                            <div class="input-group full-width">
-                                <label>🏠 Alamat Lengkap</label>
-                                <textarea id="alamat" rows="2" placeholder="Jalan, RT/RW, Kelurahan, Kecamatan"></textarea>
-                            </div>
-                            <div class="input-group">
-                                <label class="required">📅 Kunjungan Terakhir</label>
-                                <input type="text" id="kunjunganTerakhir" placeholder="contoh: 20 Maret 2026">
-                            </div>
-                            <div class="input-group">
-                                <label>📝 Keterangan Tambahan</label>
-                                <input type="text" id="keterangan" placeholder="Alasan inaktif / pindah">
-                            </div>
+                            <div class="input-group"><label class="required">📇 No. RM</label><input type="text" id="noRm" placeholder="RM-001"></div>
+                            <div class="input-group"><label class="required">👤 Nama Pasien</label><input type="text" id="namaPasien" placeholder="Nama lengkap"></div>
+                            <div class="input-group full-width"><label class="required">🩺 Diagnosa Akhir</label><input type="text" id="diagnosaAkhir" placeholder="Diagnosa utama"></div>
+                            <div class="input-group full-width"><label>🏠 Alamat</label><textarea id="alamat" rows="2"></textarea></div>
+                            <div class="input-group"><label class="required">📅 Kunjungan Terakhir</label><input type="text" id="kunjunganTerakhir" placeholder="20 Maret 2026"></div>
+                            <div class="input-group"><label>📝 Keterangan</label><input type="text" id="keterangan" placeholder="Alasan inaktif"></div>
                         </div>
-                        <div class="info-autotime">⏱️ Tanggal input akan dicatat otomatis (hari ini) dan tersimpan ke Google Spreadsheet</div>
-                        <div class="action-buttons">
-                            <button type="submit" class="btn btn-primary" id="submitBtn">➕ Simpan Data</button>
-                        </div>
+                        <div class="info-autotime">⏱️ Tanggal input otomatis hari ini</div>
+                        <div class="action-buttons"><button type="submit" class="btn btn-primary">➕ Simpan Data</button></div>
                     </form>
                 </div>
                 
                 <div class="filter-bar">
-                    <div class="filter-group">
-                        <label>📅 Filter Tanggal Input (mulai)</label>
-                        <input type="date" id="filterStart" value="${currentFilterStart}">
-                    </div>
-                    <div class="filter-group">
-                        <label>sampai tanggal</label>
-                        <input type="date" id="filterEnd" value="${currentFilterEnd}">
-                    </div>
-                    <button class="btn-filter" id="applyFilter">🔍 Terapkan Filter</button>
-                    <button class="btn-filter reset-filter" id="resetFilter">⟳ Reset (Semua Data)</button>
-                    <button class="btn-filter reset-filter" id="refreshDataBtn" style="background:#4caf50;">🔄 Refresh Data</button>
+                    <div class="filter-group"><label>📅 Filter Tgl Input</label><input type="date" id="filterStart"></div>
+                    <div class="filter-group"><label>sampai</label><input type="date" id="filterEnd"></div>
+                    <button class="btn-filter" id="applyFilter">🔍 Filter</button>
+                    <button class="btn-filter reset-filter" id="resetFilter">⟳ Reset</button>
+                    <button class="btn-filter reset-filter" id="refreshBtn" style="background:#4caf50;">🔄 Refresh</button>
                 </div>
                 
                 <div class="table-container">
-                    <div class="table-header">
-                        <h2>📋 Data Pasien Inaktif <span class="badge-count">${filtered.length}</span></h2>
-                    </div>
-                    <div style="overflow-x: auto;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="no-col">NO</th>
-                                    <th>No. RM</th>
-                                    <th>NAMA</th>
-                                    <th>Diagnosa Akhir</th>
-                                    <th>Alamat</th>
-                                    <th>Kunjungan Terakhir</th>
-                                    <th>Keterangan</th>
-                                    <th>Petugas Scan</th>
-                                    <th>Tgl Input</th>
-                                    <th>AKSI</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                ${filtered.length === 0 ? `
-                                    <tr class="empty-row">
-                                        <td colspan="10" style="text-align:center">📭 Belum ada data. Silakan isi form di atas.</td>
-                                    </tr>
-                                ` : filtered.map((item, index) => `
-                                    <tr>
-                                        <td class="no-col">${index + 1}</td>
-                                        <td>${escapeHtml(item.noRm)}</td>
-                                        <td><strong>${escapeHtml(item.namaPasien)}</strong></td>
-                                        <td>${escapeHtml(item.diagnosaAkhir)}</td>
-                                        <td>${escapeHtml(item.alamat) || '-'}</td>
-                                        <td>${escapeHtml(item.kunjunganTerakhir)}</td>
-                                        <td>${escapeHtml(item.keterangan) || '-'}</td>
-                                        <td>${escapeHtml(item.petugasScan)}</td>
-                                        <td>${item.tglInput || '-'}</td>
-                                        <td>
-                                            <div class="dropdown" data-id="${item.id}">
-                                                <button class="btn-aksi" data-id="${item.id}">▼ Aksi</button>
-                                                <div class="dropdown-content" data-dropdown="${item.id}">
-                                                    <button class="edit-option" data-id="${item.id}">✏️ Edit</button>
-                                                    <button class="delete-option" data-id="${item.id}">🗑️ Hapus</button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
+                    <div class="table-header"><h2>📋 Data Pasien Inaktif <span class="badge-count" id="totalCount">${pasienData.length}</span></h2></div>
+                    <div style="overflow-x:auto">
+                        <table id="dataTable">
+                            <thead><tr><th class="no-col">NO</th><th>No. RM</th><th>NAMA</th><th>Diagnosa</th><th>Alamat</th><th>Kunjungan Terakhir</th><th>Keterangan</th><th>Petugas</th><th>Tgl Input</th><th>AKSI</th></tr></thead>
+                            <tbody id="tableBody"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         `;
         
-        appContainer.innerHTML = formHtml;
+        appContainer.innerHTML = html;
+        renderTableData(pasienData);
         
-        // Attach event listeners
         document.getElementById('logoutBtn')?.addEventListener('click', logout);
-        document.getElementById('pasienForm')?.addEventListener('submit', handleSubmitForm);
+        document.getElementById('mainForm')?.addEventListener('submit', handleSubmit);
         document.getElementById('applyFilter')?.addEventListener('click', applyFilter);
         document.getElementById('resetFilter')?.addEventListener('click', resetFilter);
-        document.getElementById('refreshDataBtn')?.addEventListener('click', refreshData);
+        document.getElementById('refreshBtn')?.addEventListener('click', async () => {
+            await loadData();
+            renderTableData(pasienData);
+            showToast("Data di-refresh");
+        });
+    }
+    
+    function renderTableData(data) {
+        const tbody = document.getElementById('tableBody');
+        const totalSpan = document.getElementById('totalCount');
+        if (!tbody) return;
         
-        // Dropdown klik
+        const filtered = [...data].sort((a,b) => (b.id||0) - (a.id||0));
+        if (totalSpan) totalSpan.innerText = filtered.length;
+        
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="10" style="text-align:center">📭 Belum ada data. Silakan isi form. </td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = filtered.map((item, idx) => `
+            <tr>
+                <td class="no-col">${idx+1}</td>
+                <td>${escapeHtml(item.noRm)}</td>
+                <td><strong>${escapeHtml(item.namaPasien)}</strong></td>
+                <td>${escapeHtml(item.diagnosaAkhir)}</td>
+                <td>${escapeHtml(item.alamat) || '-'}</td>
+                <td>${escapeHtml(item.kunjunganTerakhir)}</td>
+                <td>${escapeHtml(item.keterangan) || '-'}</td>
+                <td>${escapeHtml(item.petugasScan)}</td>
+                <td>${item.tglInput || '-'}</td>
+                <td>
+                    <div class="dropdown" data-id="${item.id}">
+                        <button class="btn-aksi" data-id="${item.id}">▼ Aksi</button>
+                        <div class="dropdown-content" data-dropdown="${item.id}">
+                            <button class="edit-option" data-id="${item.id}">✏️ Edit</button>
+                            <button class="delete-option" data-id="${item.id}">🗑️ Hapus</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+        
+        // Dropdown events
         document.querySelectorAll('.btn-aksi').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const id = btn.getAttribute('data-id');
                 const dropdown = document.querySelector(`.dropdown-content[data-dropdown="${id}"]`);
-                document.querySelectorAll('.dropdown-content').forEach(d => {
-                    if (d !== dropdown) d.classList.remove('show');
-                });
-                dropdown.classList.toggle('show');
+                document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+                dropdown?.classList.toggle('show');
             });
         });
         
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.dropdown')) {
-                document.querySelectorAll('.dropdown-content').forEach(drop => {
-                    drop.classList.remove('show');
-                });
-            }
-        });
-        
-        // Edit
         document.querySelectorAll('.edit-option').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const id = parseInt(btn.getAttribute('data-id'));
-                openEditModal(id);
+                openEditModal(parseInt(btn.getAttribute('data-id')));
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
             });
         });
         
-        // Hapus
         document.querySelectorAll('.delete-option').forEach(btn => {
             btn.addEventListener('click', async (e) => {
                 e.stopPropagation();
                 const id = parseInt(btn.getAttribute('data-id'));
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
                 const item = pasienData.find(i => i.id == id);
-                if (item && confirm(`⚠️ Yakin ingin menghapus data pasien "${item.namaPasien}"?`)) {
-                    const success = await deleteFromServer(id);
-                    if (success) {
-                        await refreshData();
-                        showToast(`🗑️ Data ${item.namaPasien} dihapus dari server`);
+                if (item && confirm(`Hapus "${item.namaPasien}"?`)) {
+                    if (await postData("delete", null, id)) {
+                        await loadData();
+                        renderTableData(pasienData);
+                        showToast(`Data ${item.namaPasien} dihapus`);
                     }
                 }
             });
         });
+        
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+        });
     }
     
-    async function handleSubmitForm(e) {
+    function applyFilter() {
+        const start = document.getElementById('filterStart').value;
+        const end = document.getElementById('filterEnd').value;
+        if (!start && !end) {
+            renderTableData(pasienData);
+            return;
+        }
+        const filtered = pasienData.filter(item => {
+            if (!item.tglInput) return false;
+            if (start && item.tglInput < start) return false;
+            if (end && item.tglInput > end) return false;
+            return true;
+        });
+        renderTableData(filtered);
+        showToast(`Menampilkan ${filtered.length} data`);
+    }
+    
+    function resetFilter() {
+        document.getElementById('filterStart').value = '';
+        document.getElementById('filterEnd').value = '';
+        renderTableData(pasienData);
+        showToast("Filter direset");
+    }
+    
+    async function handleSubmit(e) {
         e.preventDefault();
-        
         const newData = {
             noRm: document.getElementById('noRm').value.trim(),
             namaPasien: document.getElementById('namaPasien').value.trim(),
@@ -1004,15 +480,15 @@
         };
         
         if (!newData.noRm || !newData.namaPasien || !newData.diagnosaAkhir || !newData.kunjunganTerakhir) {
-            showToast("❌ Lengkapi field yang bertanda *", true);
+            showToast("Lengkapi field *", true);
             return;
         }
         
-        const success = await saveToServer(newData, false);
-        if (success) {
-            showToast(`✅ Data ${newData.namaPasien} berhasil disimpan ke server`);
-            document.getElementById('pasienForm').reset();
-            await refreshData();
+        if (await postData("save", newData)) {
+            showToast(`✅ Data ${newData.namaPasien} tersimpan`);
+            document.getElementById('mainForm').reset();
+            await loadData();
+            renderTableData(pasienData);
         }
     }
     
@@ -1029,14 +505,10 @@
         editModal.classList.add('show');
     }
     
-    function closeEditModal() {
-        editModal.classList.remove('show');
-        editModeId = null;
-    }
+    function closeEditModal() { editModal.classList.remove('show'); editModeId = null; }
     
-    async function saveEditFromModal() {
+    async function saveEdit() {
         if (!editModeId) return;
-        
         const updatedData = {
             id: editModeId,
             noRm: document.getElementById('edit_noRm').value.trim(),
@@ -1050,51 +522,30 @@
         };
         
         if (!updatedData.noRm || !updatedData.namaPasien || !updatedData.diagnosaAkhir || !updatedData.kunjunganTerakhir) {
-            showToast("❌ Lengkapi field yang bertanda *", true);
+            showToast("Lengkapi field *", true);
             return;
         }
         
-        const success = await saveToServer(updatedData, true);
-        if (success) {
-            showToast("✅ Data berhasil diupdate di server");
+        if (await postData("update", updatedData)) {
+            showToast("Data diupdate");
             closeEditModal();
-            await refreshData();
+            await loadData();
+            renderTableData(pasienData);
         }
     }
     
-    function applyFilter() {
-        currentFilterStart = document.getElementById('filterStart').value;
-        currentFilterEnd = document.getElementById('filterEnd').value;
-        renderDashboard();
-    }
-    
-    function resetFilter() {
-        currentFilterStart = "";
-        currentFilterEnd = "";
-        renderDashboard();
-    }
-    
-    async function refreshData() {
-        await loadDataFromServer();
-        renderDashboard();
-        showToast("🔄 Data berhasil di-refresh dari server");
-    }
-    
-    // ======================= LOGIN =======================
     function renderLogin() {
         appContainer.innerHTML = `
             <div class="login-overlay">
                 <div class="login-card">
-                    <h2>🔐 Login Arsip Pasien Inaktif</h2>
-                    <p style="text-align:center; font-size:12px; color:#2c7da0; margin-bottom:15px;">☁️ Tersimpan di Google Spreadsheet</p>
-                    <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
+                    <h2>🔐 Login Arsip Pasien</h2>
+                    <p style="text-align:center;font-size:12px;color:#2c7da0;">☁️ Google Spreadsheet (JSONP)</p>
+                    <input type="text" id="loginUsername" placeholder="Username">
                     <input type="password" id="loginPassword" placeholder="Password">
                     <button id="loginBtn">Masuk</button>
                     <div id="loginError" class="login-error"></div>
-                    <div style="margin-top: 16px; font-size: 12px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 12px;">
-                        <strong>Akun Demo:</strong><br>
-                        admin / admin123 &nbsp;|&nbsp; petugas / scan123<br>
-                        sakinah / 123
+                    <div style="margin-top:16px;font-size:12px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:12px;">
+                        <strong>Akun Demo:</strong><br>admin/admin123 &nbsp;|&nbsp; petugas/scan123<br>sakinah/123
                     </div>
                 </div>
             </div>
@@ -1104,46 +555,28 @@
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             const user = VALID_USERS.find(u => u.username === username && u.password === password);
-            
             if (user) {
                 currentUser = { fullName: user.fullName, role: user.role, username: user.username };
-                await loadDataFromServer();
-                renderDashboard();
+                await loadData();
+                render();
             } else {
-                document.getElementById('loginError').textContent = "❌ Username atau password salah!";
+                document.getElementById('loginError').textContent = "Username/password salah!";
             }
         });
-        
-        document.getElementById('loginPassword').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('loginBtn').click();
-        });
     }
     
-    function logout() {
-        currentUser = null;
-        renderLogin();
-    }
+    function logout() { currentUser = null; renderLogin(); }
     
-    // ======================= INIT =======================
     window.onload = () => {
         appContainer = document.getElementById('app');
         toastEl = document.getElementById('toast');
         loadingDiv = document.getElementById('loadingIndicator');
         editModal = document.getElementById('editModal');
         
-        const closeBtn = document.getElementById('closeModalBtn');
-        const batalBtn = document.getElementById('modalBatalBtn');
-        const simpanBtn = document.getElementById('modalSimpanBtn');
-        
-        if (closeBtn) closeBtn.addEventListener('click', closeEditModal);
-        if (batalBtn) batalBtn.addEventListener('click', closeEditModal);
-        if (simpanBtn) simpanBtn.addEventListener('click', saveEditFromModal);
-        
-        if (editModal) {
-            editModal.addEventListener('click', (e) => {
-                if (e.target === editModal) closeEditModal();
-            });
-        }
+        document.getElementById('closeModalBtn')?.addEventListener('click', closeEditModal);
+        document.getElementById('modalBatalBtn')?.addEventListener('click', closeEditModal);
+        document.getElementById('modalSimpanBtn')?.addEventListener('click', saveEdit);
+        editModal?.addEventListener('click', (e) => { if(e.target === editModal) closeEditModal(); });
         
         renderLogin();
     };
