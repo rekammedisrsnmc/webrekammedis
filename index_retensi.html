@@ -228,6 +228,10 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
+        /* ========== AUTO CAPITALIZE ========== */
+        .auto-capitalize {
+            text-transform: uppercase;
+        }
 
         /* ========== FILTER & SEARCH ========== */
         .filter-section {
@@ -925,27 +929,27 @@
             <input type="hidden" id="editId">
             <div class="form-group">
                 <label>No. RM <span class="required">*</span></label>
-                <input type="text" class="form-control" id="editNoRm" required placeholder="Contoh: RM-001">
+                <input type="text" class="form-control auto-capitalize" id="editNoRm" required placeholder="Contoh: RM-001">
             </div>
             <div class="form-group">
                 <label>Nama Pasien <span class="required">*</span></label>
-                <input type="text" class="form-control" id="editNama" required placeholder="Nama lengkap">
+                <input type="text" class="form-control auto-capitalize" id="editNama" required placeholder="Nama lengkap">
             </div>
             <div class="form-group">
                 <label>Diagnosa Akhir <span class="required">*</span></label>
-                <input type="text" class="form-control" id="editDiagnosa" required placeholder="Diagnosa medis">
+                <input type="text" class="form-control auto-capitalize" id="editDiagnosa" required placeholder="Diagnosa medis">
             </div>
             <div class="form-group">
                 <label>Alamat</label>
-                <textarea class="form-control" id="editAlamat" rows="2" placeholder="Alamat lengkap"></textarea>
+                <textarea class="form-control auto-capitalize" id="editAlamat" rows="2" placeholder="Alamat lengkap"></textarea>
             </div>
             <div class="form-group">
                 <label>Kunjungan Terakhir <span class="required">*</span></label>
-                <input type="text" class="form-control" id="editKunjungan" required placeholder="Contoh: 17/06/2026 atau 2026-06-17">
+                <input type="text" class="form-control auto-capitalize" id="editKunjungan" required placeholder="Contoh: 17/06/2026 atau 2026-06-17">
             </div>
             <div class="form-group">
                 <label>Keterangan</label>
-                <input type="text" class="form-control" id="editKeterangan" placeholder="Catatan tambahan">
+                <input type="text" class="form-control auto-capitalize" id="editKeterangan" placeholder="Catatan tambahan">
             </div>
             <div class="btn-group">
                 <button type="button" class="btn btn-outline" onclick="closeEditModal()">Batal</button>
@@ -998,6 +1002,25 @@
     
     const app = document.getElementById('app');
     const toast = document.getElementById('toast');
+    
+    // ==================== AUTO CAPITALIZE ====================
+    function autoCapitalize(input) {
+        // Cegah duplicate event listener
+        if (input._autoCapitalize) return;
+        input._autoCapitalize = true;
+        
+        input.addEventListener('input', function() {
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);
+        });
+    }
+    
+    function applyAutoCapitalize() {
+        const elements = document.querySelectorAll('.auto-capitalize');
+        elements.forEach(el => autoCapitalize(el));
+    }
     
     // ==================== TOAST ====================
     function showToast(msg, isError = false, isInfo = false) {
@@ -1639,6 +1662,10 @@
         document.getElementById('editKeterangan').value = item.keterangan || '';
         
         document.getElementById('editModal').classList.add('show');
+        // 🔥 AUTO CAPITALIZE UNTUK MODAL EDIT
+        setTimeout(() => {
+            applyAutoCapitalize();
+        }, 200);
     }
     
     function closeEditModal() {
@@ -1835,7 +1862,7 @@
             
             showToast(`✅ Berhasil export ${dataPasien.length} data ke Excel!`);
         }
-    // ==================== RENDER APP ====================
+        // ==================== RENDER APP ====================
     function render() {
         const savedUser = loadSession();
         if (savedUser) {
@@ -1863,34 +1890,34 @@
                             <button class="logout-btn" onclick="logout()">Keluar</button>
                         </div>
                     </div>
-                    
+                   
                     <form id="formPasien">
                         <div class="form-grid">
                             <div class="form-group">
                                 <label>No. RM <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="noRm" required placeholder="Contoh: 000000">
+                                <input type="text" class="form-control auto-capitalize" id="noRm" required placeholder="Contoh : 112233">
                                 <span class="auto-fill-badge" id="autoFillBadge">🔄 Auto-fill</span>
                                 <div class="duplicate-warning" id="duplicateWarning">ℹ️ No RM ini sudah pernah diinput sebelumnya</div>
                             </div>
                             <div class="form-group">
                                 <label>Nama Pasien <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="namaPasien" required placeholder="Nama lengkap">
+                                <input type="text" class="form-control auto-capitalize" id="namaPasien" required placeholder="Nama lengkap">
                             </div>
                             <div class="form-group full">
                                 <label>Diagnosa Akhir <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="diagnosa" required placeholder="Diagnosa medis">
+                                <input type="text" class="form-control auto-capitalize" id="diagnosa" required placeholder="Diagnosa medis">
                             </div>
                             <div class="form-group full">
                                 <label>Alamat</label>
-                                <textarea class="form-control" id="alamat" rows="2" placeholder="Alamat lengkap pasien"></textarea>
+                                <textarea class="form-control auto-capitalize" id="alamat" rows="2" placeholder="Alamat lengkap pasien"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Kunjungan Terakhir <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="kunjungan" required placeholder="Contoh: 17/06/2026 atau 2026-06-17">
+                                <input type="text" class="form-control auto-capitalize" id="kunjungan" required placeholder="Contoh: 17/06/2026 atau 2026-06-17">
                             </div>
                             <div class="form-group">
                                 <label>Keterangan</label>
-                                <input type="text" class="form-control" id="keterangan" placeholder="Catatan tambahan">
+                                <input type="text" class="form-control auto-capitalize" id="keterangan" placeholder="Catatan tambahan">
                             </div>
                         </div>
                         <div class="form-actions">
@@ -2067,7 +2094,7 @@
                 }
             }
         });
-        
+
         // ========== RESET SESSION ON ACTIVITY ==========
         const activityEvents = ['click', 'keydown', 'scroll', 'mousemove', 'touchstart'];
         activityEvents.forEach(eventType => {
@@ -2111,6 +2138,11 @@
                 document.getElementById('noRm').focus();
             }
         });
+        
+        // ========== AUTO CAPITALIZE ==========
+        setTimeout(() => {
+            applyAutoCapitalize();
+        }, 200);
         
         document.getElementById('noRm').focus();
         loadData();
@@ -2188,12 +2220,20 @@
         });
     });
     
-    // ========== START ==========
+        // ========== START ==========
     if (APPS_SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyrTcV6Jt00-JRZMLml5d0YDpBEueP7DPnMmIPuaDqy0ttRVIvexUFsjRlRLoiYVjUN/exec") {
         console.warn("⚠️ APPS_SCRIPT_URL belum diisi! Ganti dengan URL Apps Script kamu.");
     }
     
-    renderLogin();
+    // Cek session sebelum render login
+    const savedUser = loadSession();
+    if (savedUser) {
+        currentUser = savedUser;
+        resetSessionTimer();
+        render(); // ← LANGSUNG RENDER KALAU ADA SESSION
+    } else {
+        renderLogin(); // ← TAMPILKAN LOGIN KALAU TIDAK ADA SESSION
+    }
 </script>
 </body>
 </html>
