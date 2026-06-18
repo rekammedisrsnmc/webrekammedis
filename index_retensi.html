@@ -983,7 +983,9 @@
     ];
     
     const ITEMS_PER_PAGE = 25;
+    const SESSION_TIMEOUT = 5 * 60 * 60 * 1000; // 5 jam dalam milidetik
     
+    let sessionTimer = null;
     let currentUser = null;
     let dataPasien = [];
     let filteredData = [];
@@ -1263,7 +1265,73 @@
             return false;
         }
     }
-    
+        // ==================== SESSION MANAGEMENT ====================
+    function saveSession(user) {
+        const sessionData = {
+            user: user,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('arsip_session', JSON.stringify(sessionData));
+        currentUser = user;
+        resetSessionTimer();
+    }
+
+    function loadSession() {
+        try {
+            const sessionData = localStorage.getItem('arsip_session');
+            if (!sessionData) return null;
+            
+            const parsed = JSON.parse(sessionData);
+            const elapsed = Date.now() - parsed.timestamp;
+            
+            // Cek apakah session sudah expired (> 5 jam)
+            if (elapsed > SESSION_TIMEOUT) {
+                localStorage.removeItem('arsip_session');
+                return null;
+            }
+            
+            return parsed.user;
+        } catch {
+            return null;
+        }
+    }
+
+    function clearSession() {
+        localStorage.removeItem('arsip_session');
+        currentUser = null;
+        if (sessionTimer) {
+            clearTimeout(sessionTimer);
+            sessionTimer = null;
+        }
+    }
+
+    function resetSessionTimer() {
+        if (sessionTimer) {
+            clearTimeout(sessionTimer);
+            sessionTimer = null;
+        }
+        
+        // Set timer untuk auto logout setelah 5 jam
+        sessionTimer = setTimeout(() => {
+            clearSession();
+            showToast("⏰ Sesi telah berakhir (5 jam), silakan login kembali.", false, true);
+            renderLogin();
+        }, SESSION_TIMEOUT);
+    }
+
+    // Reset timer setiap ada aktivitas user
+    function resetSessionOnActivity() {
+        if (currentUser) {
+            // Update timestamp di localStorage
+            const sessionData = localStorage.getItem('arsip_session');
+            if (sessionData) {
+                const parsed = JSON.parse(sessionData);
+                parsed.timestamp = Date.now();
+                localStorage.setItem('arsip_session', JSON.stringify(parsed));
+            }
+            resetSessionTimer();
+        }
+    }
     // ==================== AUTO-FILL ====================
     function checkAutoFill(noRm) {
         if (!noRm.trim()) {
@@ -1769,7 +1837,11 @@
         }
     // ==================== RENDER APP ====================
     function render() {
-        if (!currentUser) {
+        const savedUser = loadSession();
+        if (savedUser) {
+            currentUser = savedUser;
+            resetSessionTimer();
+        } else if (!currentUser) {
             renderLogin();
             return;
         }
@@ -1996,6 +2068,12 @@
             }
         });
         
+        // ========== RESET SESSION ON ACTIVITY ==========
+        const activityEvents = ['click', 'keydown', 'scroll', 'mousemove', 'touchstart'];
+        activityEvents.forEach(eventType => {
+            document.addEventListener(eventType, resetSessionOnActivity);
+        });
+        
         // ========== SUBMIT ==========
         document.getElementById('formPasien').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2040,6 +2118,7 @@
     
     // ==================== LOGIN ====================
     function renderLogin() {
+        clearSession();
         app.innerHTML = `
             <div class="login-wrapper">
                 <div class="login-box">
@@ -2076,14 +2155,14 @@
             if (e.key === 'Enter') { e.preventDefault(); loginForm.dispatchEvent(new Event('submit')); }
         });
         
-        loginForm.addEventListener('submit', (e) => {
+                loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = usernameInput.value.trim();
             const password = passwordInput.value.trim();
             const user = VALID_USERS.find(u => u.username === username && u.password === password);
             
             if (user) {
-                currentUser = user;
+                saveSession(user); // ← PAKAI INI
                 loginError.textContent = '';
                 render();
             } else {
@@ -2095,7 +2174,7 @@
     }
     
     function logout() {
-        currentUser = null;
+        clearSession();
         renderLogin();
     }
     
