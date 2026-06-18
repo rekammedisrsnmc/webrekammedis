@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Arsip Pasien</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #eef2f7 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .header h1 {
+            color: var(--primary, #1a3a5c);
+            font-size: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .btn-back {
+            padding: 10px 24px;
+            background: var(--primary, #1a3a5c);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-back:hover {
+            background: #0f2842;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(26, 58, 92, 0.3);
+        }
+        .btn-refresh {
+            padding: 10px 24px;
+            background: var(--gray-200, #e2e8f0);
+            color: var(--gray-700, #334155);
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-refresh:hover {
+            background: var(--gray-300, #cbd5e1);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+        }
+        .stat-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary, #1a3a5c);
+        }
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--gray-500, #64748b);
+            font-weight: 500;
+        }
+        .stat-card .change {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .stat-card .change.up { background: #d4edda; color: #155724; }
+        .stat-card .change.down { background: #f8d7da; color: #721c24; }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .chart-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .chart-card h3 {
+            color: var(--primary, #1a3a5c);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .chart-card canvas {
+            max-height: 250px;
+            max-width: 100%;
+        }
+
+        /* Top Lists */
+        .lists-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        .list-card {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .list-card h3 {
+            color: var(--primary, #1a3a5c);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-100, #eef2f7);
+        }
+        .list-item:last-child { border-bottom: none; }
+        .list-item .rank {
+            font-weight: 700;
+            color: var(--gray-400, #94a3b8);
+            margin-right: 0.75rem;
+        }
+        .list-item .name { flex: 1; }
+        .list-item .count {
+            font-weight: 600;
+            color: var(--primary, #1a3a5c);
+        }
+        .list-item .bar {
+            width: 100px;
+            height: 6px;
+            background: var(--gray-200, #e2e8f0);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-left: 0.75rem;
+        }
+        .list-item .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-light, #2c5f7e), var(--primary, #1a3a5c));
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-grid { grid-template-columns: 1fr; }
+            .lists-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .header { flex-direction: column; align-items: stretch; }
+            .header-actions { justify-content: stretch; }
+            .header-actions .btn-back, .header-actions .btn-refresh { flex: 1; text-align: center; justify-content: center; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>📊 Dashboard Arsip Pasien</h1>
+        <div class="header-actions">
+            <button class="btn-refresh" onclick="refreshData()">🔄 Refresh</button>
+            <a href="index_retensi.html" class="btn-back">← Kembali ke Input</a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <div class="icon">📄</div>
+            <div class="value" id="totalPasien">0</div>
+            <div class="label">Total Pasien</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">📈</div>
+            <div class="value" id="hariIni">0</div>
+            <div class="label">Kunjungan Hari Ini</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">📅</div>
+            <div class="value" id="bulanIni">0</div>
+            <div class="label">Kunjungan Bulan Ini</div>
+        </div>
+        <div class="stat-card">
+            <div class="icon">👤</div>
+            <div class="value" id="totalPetugas">0</div>
+            <div class="label">Total Petugas</div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+        <div class="chart-card">
+            <h3>📈 Kunjungan 30 Hari Terakhir</h3>
+            <canvas id="kunjunganChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>👤 Per Petugas</h3>
+            <canvas id="petugasChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Top Lists -->
+    <div class="lists-grid">
+        <div class="list-card">
+            <h3>🏥 Top 5 Diagnosa</h3>
+            <div id="topDiagnosa"></div>
+        </div>
+        <div class="list-card">
+            <h3>📋 Pasien dengan Kunjungan Terbanyak</h3>
+            <div id="topPasien"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== KONFIGURASI ====================
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrTcV6Jt00-JRZMLml5d0YDpBEueP7DPnMmIPuaDqy0ttRVIvexUFsjRlRLoiYVjUN/exec";
+    
+    let dataPasien = [];
+    let chartKunjungan = null;
+    let chartPetugas = null;
+
+    // ==================== UTILITY ====================
+    function parseDate(dateString) {
+        if (!dateString) return null;
+        try {
+            let date;
+            if (dateString.includes('/')) {
+                const parts = dateString.split('/');
+                if (parts.length === 3) {
+                    date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                }
+            } else {
+                date = new Date(dateString);
+            }
+            if (isNaN(date.getTime())) return null;
+            return date;
+        } catch { return null; }
+    }
+
+    function getToday() {
+        const now = new Date();
+        return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    }
+
+    function formatDateIndonesia(dateString) {
+        if (!dateString) return '-';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        } catch { return dateString; }
+    }
+
+    // ==================== LOAD DATA ====================
+    async function loadData() {
+        try {
+            const callbackName = "jsonpCallback_" + Date.now();
+            const script = document.createElement('script');
+            const url = `${APPS_SCRIPT_URL}?t=${Date.now()}&callback=${callbackName}`;
+            
+            const response = await new Promise((resolve, reject) => {
+                window[callbackName] = function(res) {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    resolve(res);
+                };
+                script.onerror = function() {
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    reject(new Error("Network error"));
+                };
+                script.src = url;
+                document.body.appendChild(script);
+            });
+            
+            if (response && response.success) {
+                dataPasien = Array.isArray(response.data) 
+                    ? response.data.filter(row => row.noRm && row.noRm.toString().trim() !== '')
+                    : [];
+                renderDashboard();
+            } else {
+                dataPasien = [];
+                renderDashboard();
+            }
+        } catch(err) {
+            console.error("Error load:", err);
+            dataPasien = [];
+            renderDashboard();
+        }
+    }
+
+    // ==================== RENDER DASHBOARD ====================
+    function renderDashboard() {
+        // Stats
+        const total = dataPasien.length;
+        const today = getToday();
+        const now = new Date();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+
+        const hariIni = dataPasien.filter(item => {
+            const date = parseDate(item.tglInput);
+            return date && date.toISOString().split('T')[0] === today;
+        }).length;
+
+        const bulanIni = dataPasien.filter(item => {
+            const date = parseDate(item.tglInput);
+            return date && date.getFullYear() === year && String(date.getMonth() + 1).padStart(2, '0') === month;
+        }).length;
+
+        const petugasSet = new Set(dataPasien.map(item => item.petugasScan).filter(Boolean));
+
+        document.getElementById('totalPasien').textContent = total;
+        document.getElementById('hariIni').textContent = hariIni;
+        document.getElementById('bulanIni').textContent = bulanIni;
+        document.getElementById('totalPetugas').textContent = petugasSet.size;
+
+        // Charts
+        renderKunjunganChart();
+        renderPetugasChart();
+        renderTopDiagnosa();
+        renderTopPasien();
+    }
+
+    // ==================== KUNJUNGAN CHART ====================
+    function renderKunjunganChart() {
+        const ctx = document.getElementById('kunjunganChart').getContext('2d');
+        
+        // Ambil 30 hari terakhir
+        const labels = [];
+        const data = [];
+        const now = new Date();
+        
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date(now);
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toISOString().split('T')[0];
+            labels.push(formatDateIndonesia(dateStr));
+            
+            const count = dataPasien.filter(item => {
+                const d = parseDate(item.tglInput);
+                return d && d.toISOString().split('T')[0] === dateStr;
+            }).length;
+            data.push(count);
+        }
+
+        if (chartKunjungan) chartKunjungan.destroy();
+
+        chartKunjungan = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Kunjungan',
+                    data: data,
+                    borderColor: '#1a3a5c',
+                    backgroundColor: 'rgba(26, 58, 92, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#1a3a5c'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    },
+                    x: {
+                        ticks: { maxTicksLimit: 15 }
+                    }
+                }
+            }
+        });
+    }
+
+    // ==================== PETUGAS CHART ====================
+    function renderPetugasChart() {
+        const ctx = document.getElementById('petugasChart').getContext('2d');
+        
+        const petugasCount = {};
+        dataPasien.forEach(item => {
+            const petugas = item.petugasScan || 'Unknown';
+            petugasCount[petugas] = (petugasCount[petugas] || 0) + 1;
+        });
+
+        const labels = Object.keys(petugasCount);
+        const data = Object.values(petugasCount);
+        const colors = ['#1a3a5c', '#2c5f7e', '#3498db', '#5dade2', '#85c1e9', '#aed6f1'];
+
+        if (chartPetugas) chartPetugas.destroy();
+
+        chartPetugas = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors.slice(0, labels.length),
+                    borderWidth: 2,
+                    borderColor: 'white'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 10,
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // ==================== TOP DIAGNOSA ====================
+    function renderTopDiagnosa() {
+        const diagnosaCount = {};
+        dataPasien.forEach(item => {
+            const d = item.diagnosaAkhir || 'Tidak Terdiagnosa';
+            diagnosaCount[d] = (diagnosaCount[d] || 0) + 1;
+        });
+
+        const sorted = Object.entries(diagnosaCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+
+        const maxCount = sorted.length > 0 ? sorted[0][1] : 1;
+        const container = document.getElementById('topDiagnosa');
+        
+        if (sorted.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray-400);text-align:center;padding:1rem;">Belum ada data</p>';
+            return;
+        }
+
+        let html = '';
+        sorted.forEach(([name, count], index) => {
+            const percentage = (count / maxCount) * 100;
+            html += `
+                <div class="list-item">
+                    <span><span class="rank">${index + 1}</span> <span class="name">${name}</span></span>
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <span class="count">${count}</span>
+                        <div class="bar"><div class="bar-fill" style="width:${percentage}%"></div></div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    // ==================== TOP PASIEN ====================
+    function renderTopPasien() {
+        const pasienCount = {};
+        dataPasien.forEach(item => {
+            const key = `${item.noRm} - ${item.namaPasien}`;
+            pasienCount[key] = (pasienCount[key] || 0) + 1;
+        });
+
+        const sorted = Object.entries(pasienCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+
+        const maxCount = sorted.length > 0 ? sorted[0][1] : 1;
+        const container = document.getElementById('topPasien');
+        
+        if (sorted.length === 0) {
+            container.innerHTML = '<p style="color:var(--gray-400);text-align:center;padding:1rem;">Belum ada data</p>';
+            return;
+        }
+
+        let html = '';
+        sorted.forEach(([name, count], index) => {
+            const percentage = (count / maxCount) * 100;
+            html += `
+                <div class="list-item">
+                    <span><span class="rank">${index + 1}</span> <span class="name">${name}</span></span>
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <span class="count">${count}x</span>
+                        <div class="bar"><div class="bar-fill" style="width:${percentage}%"></div></div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    // ==================== REFRESH ====================
+    function refreshData() {
+        loadData();
+    }
+
+    // ==================== START ====================
+    loadData();
+</script>
+
+</body>
+</html>
