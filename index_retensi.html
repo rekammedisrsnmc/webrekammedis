@@ -1,424 +1,570 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Direksi · Rumah Sakit</title>
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" href="logorekammedis.ico">
+<title>Dashboard Direksi | RSU An'Nimah</title>
 
-    body {
-      background: #eaf5ea;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    .dashboard {
-      max-width: 1280px;
-      width: 100%;
-      background: #ffffff;
-      border-radius: 32px 32px 24px 24px;
-      box-shadow: 0 20px 40px rgba(0, 40, 0, 0.15);
-      padding: 2rem 2rem 3rem;
-      border: 1px solid #b8d9b8;
-      transition: all 0.2s;
-    }
+<style>
+:root{
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --green-light:#e8f5ee;
+  --bg:#eef5f2;
+  --card:#ffffff;
+  --shadow:0 12px 30px rgba(0,0,0,.12);
+  --radius:14px;
+}
 
-    /* HEADER */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 3px solid #1e6b3b;
-      padding-bottom: 0.75rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;}
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+body{
+  background:var(--bg);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
 
-    .header-left .logo-placeholder {
-      width: 60px;
-      height: 60px;
-      background: #dff0df;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px dashed #1e6b3b;
-      color: #1e6b3b;
-      font-size: 0.7rem;
-      text-align: center;
-      padding: 4px;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
+/* ===== HEADER ===== */
+header{
+  background:linear-gradient(135deg,#ffffff,#e9f7f0);
+  padding:15px 20px;
+  box-shadow:var(--shadow);
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
+.logo img{width:300px;height:70px}
 
-    .header-left .logo-placeholder img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
+/* USER PROFILE DI HEADER */
+.header-right{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.user-badge{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  padding:6px 16px;
+  border-radius:30px;
+  font-size:11px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:var(--shadow);
+}
+.user-avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:16px;
+  color:#fff;
+  box-shadow:var(--shadow);
+}
+.user-info{
+  text-align:right;
+}
+.user-info .name{
+  font-size:14px;
+  font-weight:600;
+  color:#333;
+}
+.user-info .role{
+  font-size:11px;
+  color:#777;
+}
 
-    .header-left h1 {
-      font-weight: 600;
-      font-size: 2.2rem;
-      letter-spacing: -0.5px;
-      color: #0a3b1a;
-    }
+/* ===== MAIN ===== */
+main{flex:1;padding:40px 20px}
 
-    .header-left small {
-      display: block;
-      font-weight: 400;
-      font-size: 0.9rem;
-      color: #2a6b3a;
-      margin-top: 4px;
-    }
+.container{
+  max-width:1200px;
+  margin:auto;
+  animation:fadeUp .6s ease;
+}
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
+/* ===== DIVIDER / PEMISAH ===== */
+.section-divider{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin:45px 0 35px 0;
+}
+.section-divider .line{
+  flex:1;
+  height:2px;
+  background:linear-gradient(to right, transparent, var(--green), transparent);
+}
+.section-divider .label{
+  font-size:13px;
+  font-weight:700;
+  color:var(--green-dark);
+  background:#fff;
+  padding:6px 20px;
+  border-radius:30px;
+  box-shadow:var(--shadow);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.section-divider .label i{
+  margin-right:8px;
+}
 
-    .btn-admin {
-      background: #1e6b3b;
-      color: white;
-      padding: 0.5rem 1.5rem;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      text-decoration: none;
-      transition: 0.15s;
-      border: 1px solid #145a2c;
-      box-shadow: 0 2px 6px rgba(0,40,0,0.1);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
+/* DIVIDER TIPIS */
+.divider-thin{
+  height:1px;
+  background:linear-gradient(to right, transparent, #c0d9ce, transparent);
+  margin:30px 0;
+}
 
-    .btn-admin:hover {
-      background: #145a2c;
-      transform: scale(1.02);
-      box-shadow: 0 4px 10px rgba(0,50,0,0.2);
-      border-color: #0b4a1f;
-    }
+/* ===== PAGE HEADER ===== */
+.title-container{
+  background:#fff;
+  border-radius:22px;
+  padding:30px;
+  box-shadow:var(--shadow);
+  display:flex;
+  gap:20px;
+  align-items:center;
+  margin-bottom:40px;
+}
+.title-icon{
+  font-size:40px;
+  color:var(--green);
+}
+.title-text h1{
+  font-size:34px;
+  color:var(--green-dark);
+}
+.title-text p{
+  margin-top:6px;
+  color:#555;
+  font-size:15px;
+}
 
-    .btn-admin i {
-      font-size: 0.9rem;
-    }
+/* ===== MORNING REVIEW BUTTON ===== */
+.morning-review-btn{
+  width:100%;
+  background:#499770;
+  color:#fff;
+  border:none;
+  padding:16px 28px;
+  border-radius:22px;
+  font-size:18px;
+  font-weight:700;
+  display:flex;
+  gap:14px;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+  transition:.3s;
+  margin-bottom:30px;
+  letter-spacing:.5px;
+}
+.morning-review-btn:hover{
+  background:#307a55;
+}
+.morning-review-btn i{
+  font-size:22px;
+}
 
-    /* semua tombol & link */
-    .btn-drive {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: #1e6b3b;
-      color: white;
-      padding: 0.4rem 1rem 0.4rem 0.9rem;
-      border-radius: 40px;
-      font-weight: 500;
-      font-size: 0.8rem;
-      text-decoration: none;
-      transition: 0.15s;
-      border: 1px solid #145a2c;
-      box-shadow: 0 1px 3px rgba(0,30,0,0.1);
-      letter-spacing: 0.2px;
-    }
+/* ===== INDICATOR GRID ===== */
+.indicator-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:24px;
+}
 
-    .btn-drive i {
-      font-size: 0.8rem;
-    }
+.indicator-card{
+  background:#fff;
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition:.3s;
+}
+.indicator-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.12);
+}
 
-    .btn-drive:hover {
-      background: #145a2c;
-      transform: scale(1.02);
-      box-shadow: 0 4px 8px rgba(0,50,0,0.15);
-      border-color: #0b4a1f;
-    }
+.card-header{
+  background:var(--bg);
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid #e0ece6;
+}
+.card-header i{
+  font-size:20px;
+  color:var(--green);
+  width:36px;
+  height:36px;
+  background:#fff;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.card-header h3{
+  font-size:15px;
+  color:var(--green-dark);
+  font-weight:700;
+}
 
-    /* accordion / panel */
-    .panel-section {
-      margin-bottom: 1.2rem;
-      border-radius: 20px;
-      background: #f6fbf6;
-      border: 1px solid #cde0cd;
-      overflow: hidden;
-      transition: 0.2s;
-    }
+.card-body{
+  padding:12px 8px 12px 20px;
+}
+.card-body ul{
+  list-style:none;
+}
+.card-body ul li{
+  padding:8px 12px 8px 0;
+  border-bottom:1px solid #f5f5f5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  font-size:14px;
+  color:#444;
+  transition:.2s;
+}
+.card-body ul li:last-child{border-bottom:0;}
+.card-body ul li:hover{
+  background:#f8fbf9;
+  padding-left:6px;
+  border-radius:6px;
+}
+.card-body ul li .link-icon{
+  color:var(--green);
+  text-decoration:none;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-weight:500;
+  padding:4px 12px;
+  border-radius:20px;
+  background:var(--bg);
+  transition:.3s;
+  white-space:nowrap;
+}
+.card-body ul li .link-icon:hover{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+}
+.card-body ul li .link-icon i{
+  font-size:12px;
+}
 
-    .panel-header {
-      background: #e3f0e3;
-      padding: 0.9rem 1.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #0f4020;
-      border-bottom: 1px solid #c5ddc5;
-      transition: 0.1s;
-    }
+/* ===== SINGLE LINK CARD ===== */
+.single-link-card{
+  background:#fff;
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  transition:.3s;
+}
+.single-link-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.12);
+}
+.single-link-card .card-header{
+  background:var(--bg);
+}
+.single-link-card .card-header i{
+  color:var(--green);
+}
+.single-link-card .card-body{
+  padding:16px 20px;
+}
+.single-link-card .card-body a{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  text-decoration:none;
+  color:#444;
+  font-size:14px;
+  padding:10px 0;
+  transition:.3s;
+  border-bottom:1px solid #f5f5f5;
+}
+.single-link-card .card-body a:last-child{
+  border-bottom:0;
+}
+.single-link-card .card-body a:hover{
+  color:var(--green);
+  padding-left:6px;
+}
+.single-link-card .card-body a i{
+  color:var(--green);
+  font-size:16px;
+}
 
-    .panel-header:hover {
-      background: #d6ead6;
-    }
+/* ===== MONITORING BUTTON ===== */
+.monitoring-btn{
+  display:block;
+  background:#ffffff;
+  color:#247c5f;
+  padding:18px 28px;
+  border-radius:22px;
+  text-decoration:none;
+  font-size:17px;
+  font-weight:700;
+  box-shadow:var(--shadow);
+  transition:.3s;
+  letter-spacing:.5px;
+  margin-top:30px;
+  text-align:center;
+}
+.monitoring-btn:hover{
+  transform:translateY(-3px);
+  background:var(--bg);
+  color:#3ab16f;
+}
+.monitoring-btn i{
+  margin:0 12px;
+}
 
-    .panel-header i.fa-chevron-down {
-      transition: transform 0.25s;
-      font-size: 0.9rem;
-      color: #1e6b3b;
-    }
+/* ===== FOOTER ===== */
+footer{
+  background:#fff;
+  padding:30px 20px;
+  color:#444;
+  box-shadow:var(--shadow);
+  margin-top:20px;
+}
+.small{font-size:14px;color:#666}
 
-    .panel-header.open i.fa-chevron-down {
-      transform: rotate(180deg);
-    }
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1}
+}
 
-    .panel-body {
-      padding: 0.8rem 1.8rem 1.5rem;
-      background: white;
-    }
-
-    .sub-group {
-      margin-top: 0.8rem;
-      border-left: 4px solid #a8c9a8;
-      padding-left: 1rem;
-    }
-
-    .sub-title {
-      font-weight: 600;
-      color: #1b542b;
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .sub-title i {
-      color: #2a7a3e;
-      font-size: 0.9rem;
-    }
-
-    .grid-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem 0.9rem;
-      padding: 0.2rem 0 0.2rem;
-    }
-
-    .grid-links .btn-drive {
-      flex: 0 0 auto;
-      min-width: 130px;
-    }
-
-    /* ===== BUTTON MONITORING ===== */
-    .btn-monitoring-full {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #e3f0e3;
-      padding: 0.9rem 1.8rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #0f4020;
-      text-decoration: none;
-      transition: 0.15s;
-      border: 1px solid #cde0cd;
-      box-shadow: 0 1px 3px rgba(0,30,0,0.05);
-      width: 100%;
-      cursor: pointer;
-    }
-
-    .btn-monitoring-full:hover {
-      background: #d6ead6;
-    }
-
-    .btn-monitoring-full .icon-left {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-
-    .btn-monitoring-full .icon-left i {
-      color: #1e6b3b;
-      font-size: 1.2rem;
-    }
-
-    .btn-monitoring-full .arrow-right {
-      color: #1e6b3b;
-      font-size: 1.2rem;
-      transition: transform 0.2s;
-    }
-
-
-    .footer-note {
-      margin-top: 2rem;
-      color: #367a47;
-      font-size: 0.8rem;
-      text-align: right;
-      border-top: 1px solid #c5ddc5;
-      padding-top: 1.2rem;
-      opacity: 0.8;
-    }
-
-    /* responsive */
-    @media (max-width: 700px) {
-      .dashboard { padding: 1.5rem 1rem; }
-      .header-left h1 { font-size: 1.6rem; }
-      .header-left .logo-placeholder { width: 50px; height: 50px; }
-      .panel-header { font-size: 1rem; padding: 0.8rem 1.2rem; }
-      .panel-body { padding: 0.6rem 1rem 1.2rem; }
-      .grid-links .btn-drive { min-width: 100%; }
-      .btn-admin { font-size: 0.8rem; padding: 0.4rem 1rem; }
-      .btn-monitoring-full { font-size: 1rem; padding: 0.8rem 1.2rem; }
-    }
-  </style>
+@media(max-width:900px){
+  .indicator-grid{grid-template-columns:1fr;}
+  .title-text h1{font-size:26px;}
+  .logo img{width:200px;height:50px;}
+  .header-right{flex-wrap:wrap;justify-content:flex-end;}
+}
+@media(max-width:500px){
+  .logo img{width:150px;height:40px;}
+  .user-info{display:none;}
+  .morning-review-btn{font-size:14px;padding:14px 16px;}
+  .section-divider .label{font-size:11px;padding:4px 14px;}
+}
+</style>
 </head>
+
 <body>
-<div class="dashboard">
 
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-left">
-        <img src="logorsnmc.png" alt="Logo Rumah Sakit" style="height: 65px; width: auto;">
-      <div>
-        <h1>DASHBOARD DIREKSI</h1>
-        <small style="margin-right: 6px;"></i>Rumah Sakit Umum An'Nimah</small>
-      </div>
-    </div>
-    <div class="header-right">
-      <a href="admin.html" class="btn-admin">
-        <i class="fas fa-user-shield"></i> Admin Dashboard
-      </a>
+<header>
+  <div class="logo">
+    <img src="logopanjang.png" alt="Logo RSU An'Nimah">
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+  <!-- ===== TITLE ===== -->
+  <div class="title-container">
+    <div class="title-icon"><i class="fas fa-clipboard-list"></i></div>
+    <div class="title-text">
+      <h1>DASHBOARD DIREKSI</h1>
+      <p>Morning Review - Ringkasan Kinerja Harian RSU An'Nimah</p>
     </div>
   </div>
 
-  <!-- ========== MORNING DASHBOARD REVIEW ========== -->
-  <!-- AWALNYA TERTUTUP (tidak ada class "open" di header) -->
-  <div class="panel-section">
-    <div class="panel-header" onclick="togglePanel(this)">
-      <span><i class="fas fa-sun" style="margin-right: 10px; color: #286345;"></i>Morning Dashboard Review</span>
-      <i class="fas fa-chevron-down"></i>
-    </div>
-    <div class="panel-body" style="display: none;">
-
-      <!-- 1. indikator operasional -->
-      <div class="sub-group">
-        <div class="sub-title"><i class="fas fa-chart-line"></i> Indikator Operasional</div>
-        <div class="grid-links">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> BOR</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Jumlah pasien rawat jalan</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Kunjungan IGD</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Jumlah pasien rawat inap</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Ketersediaan tempat tidur</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Pasien kritis</a>
-        </div>
-      </div>
-
-      <!-- 2. indikator keuangan -->
-      <div class="sub-group">
-        <div class="sub-title"><i class="fas fa-coins"></i> Indikator Keuangan</div>
-        <div class="grid-links">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Pendapatan harian rumah sakit</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Klaim BPJS yang pending</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Cash position / cash flow harian</a>
-        </div>
-      </div>
-
-      <!-- 3. indikator SDM -->
-      <div class="sub-group">
-        <div class="sub-title"><i class="fas fa-user-md"></i> Indikator SDM</div>
-        <div class="grid-links">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Ketersediaan dokter dan perawat</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Absensi SDM kritis</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Kebutuhan SDM pada shift hari berjalan</a>
-        </div>
-      </div>
-
-      <!-- 4. indikator mutu dan keselamatan pasien -->
-      <div class="sub-group">
-        <div class="sub-title"><i class="fas fa-shield-alt"></i> Indikator Mutu & Keselamatan Pasien</div>
-        <div class="grid-links">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Insiden keselamatan pasien 24 jam</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Kejadian sentinel / KTD</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Keluhan pasien belum terselesaikan</a>
-        </div>
-      </div>
-
-      <!-- 5. indikator digital dan infrastruktur -->
-      <div class="sub-group">
-        <div class="sub-title"><i class="fas fa-microchip"></i> Indikator Digital & Infrastruktur</div>
-        <div class="grid-links">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Status HIS/RME</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Ketersediaan alat kritis (listrik, O₂, air)</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Status tempat tidur ICU/NICU/PICU</a>
-        </div>
-      </div>
-
-      <!-- 6. indikator kepatuhan bpjs & kemenkes -->
-      <div class="sub-group" style="border-left-color: #2d7a42;">
-        <div class="sub-title"><i class="fas fa-file-contract"></i> Kepatuhan & Regulasi</div>
-        <div class="grid-links">
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Indikator kepatuhan BPJS</a>
-          <a href="https://drive.google.com" target="_blank" class="btn-drive"><i class="fas fa-external-link-alt"></i> Indikator kepatuhan Kemenkes</a>
-        </div>
-      </div>
-
-    </div> <!-- end panel-body -->
-  </div> <!-- end panel-section -->
-
-  <!-- ========== MONITORING & EVALUASI KINERJA BERJENJANG ========== -->
-  <!-- Button seperti gambar: full-width, ada icon kiri, teks, panah kanan -->
-  <a href="https://drive.google.com" target="_blank" class="btn-monitoring-full">
-    <span class="icon-left">
-      <i class="fas fa-chart-pie"></i>
-      Monitoring & Evaluasi Kinerja Berjenjang
-    </span>
-    <span class="arrow-right">
-      <i class="fas fa-arrow-right"></i>
-    </span>
-  </a>
-
-  <div class="footer-note">
-    <i class="fas fa-check-circle" style="color: #1e6b3b;"></i> semua indikator terhubung ke Google Drive · versi 2.5
+  <!-- ===== DIVIDER 1 ===== -->
+  <div class="section-divider">
+    <span class="line"></span>
+    <span class="label"><i class="fas fa-chart-pie"></i> MORNING DASHBOARD REVIEW</span>
+    <span class="line"></span>
   </div>
-</div>
 
-<script>
-  // toggle panel (accordion) - hanya untuk Morning Dashboard Review
-  function togglePanel(headerElement) {
-    const panel = headerElement.closest('.panel-section');
-    const body = panel.querySelector('.panel-body');
-    const chevron = headerElement.querySelector('.fa-chevron-down');
+  <!-- ===== INDICATOR GRID ===== -->
+  <div class="indicator-grid">
 
-    if (body.style.display === 'none' || body.style.display === '') {
-      body.style.display = 'block';
-      headerElement.classList.add('open');
-      chevron.style.transform = 'rotate(0deg)';
-    } else {
-      body.style.display = 'none';
-      headerElement.classList.remove('open');
-      chevron.style.transform = 'rotate(-90deg)';
-    }
-  }
-</script>
+    <!-- 1. INDIKATOR OPERASIONAL -->
+    <div class="indicator-card">
+      <div class="card-header">
+        <i class="fas fa-hospital-user"></i>
+        <h3>INDIKATOR OPERASIONAL</h3>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>BOR <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Jumlah Pasien Rawat Jalan <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Kunjungan IGD <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Jumlah Pasien Rawat Inap <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Ketersediaan Tempat Tidur <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Pasien Kritis <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2. INDIKATOR KEUANGAN -->
+    <div class="indicator-card">
+      <div class="card-header">
+        <i class="fas fa-coins"></i>
+        <h3>INDIKATOR KEUANGAN</h3>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Pendapatan Harian RS <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Klaim BPJS Pending <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Cash Position / Cash Flow Harian <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 3. INDIKATOR SDM -->
+    <div class="indicator-card">
+      <div class="card-header">
+        <i class="fas fa-user-md"></i>
+        <h3>INDIKATOR SDM</h3>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Ketersediaan Dokter & Perawat <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Absensi SDM Kritis <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Kebutuhan SDM Shift Hari Ini <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 4. INDIKATOR MUTU & KESELAMATAN PASIEN -->
+    <div class="indicator-card">
+      <div class="card-header">
+        <i class="fas fa-shield-alt"></i>
+        <h3>MUTU & KESELAMATAN PASIEN</h3>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Insiden Keselamatan Pasien 24 Jam <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Kejadian Sentinel / KTD <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Keluhan Pasien Belum Selesai <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 5. INDIKATOR DIGITAL & INFRASTRUKTUR -->
+    <div class="indicator-card">
+      <div class="card-header">
+        <i class="fas fa-microchip"></i>
+        <h3>DIGITAL & INFRASTRUKTUR</h3>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Status HIS/RME <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Ketersediaan Alat Kritis & Utilitas <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+          <li>Status ICU/NICU/PICU <a href="https://drive.google.com" target="_blank" class="link-icon"><i class="fas fa-external-link-alt"></i> Lihat</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DIVIDER 3 ===== -->
+  <div class="divider-thin"></div>
+
+  <!-- ===== INDIKATOR KEPATUHAN (2 KARTU FULL WIDTH) ===== -->
+  <div class="indicator-grid">
+
+    <!-- 6. INDIKATOR KEPATUHAN BPJS -->
+    <div class="single-link-card">
+      <div class="card-header">
+        <i class="fas fa-handshake"></i>
+        <h3>INDIKATOR KEPATUHAN BPJS</h3>
+      </div>
+      <div class="card-body">
+        <a href="https://sites.google.com/view/ketoprakpwt/overview-capaian/indikator-1" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Updating display Tempat Tidur Perawatan terhubung Mobile JKN</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="https://sites.google.com/view/ketoprakpwt/overview-capaian/indikator-2" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Display Tindakan Operasi terhubung Mobile JKN</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="https://sites.google.com/view/ketoprakpwt/overview-capaian/indikator-3" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Sistem antrean terhubung Mobile JKN</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="https://sites.google.com/view/ketoprakpwt/overview-capaian/indikator-4" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Tindak lanjut dan penyelesaian terhadap keluhan Peserta terkait pelayanan kesehatan di FKRTL</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="https://sites.google.com/view/ketoprakpwt/overview-capaian/indikator-5" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Hasil survey pemahaman regulasi JKN</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="https://sites.google.com/view/ketoprakpwt/overview-capaian/indikator-6" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Nilai kepuasan Peserta di FKRTL</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="https://sites.google.com/view/ketoprakpwt/overview-capaian/indikator-7" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Capaian rekrutmen Peserta PRB</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- 7. INDIKATOR KEPATUHAN KEMENKES -->
+    <div class="single-link-card">
+      <div class="card-header">
+        <i class="fas fa-building"></i>
+        <h3>INDIKATOR KEPATUHAN KEMENKES</h3>
+      </div>
+      <div class="card-body">
+        <a href="https://drive.google.com" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Lihat Data Kepatuhan Kemenkes</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+   <!-- ===== DIVIDER 4 ===== -->
+  <div class="section-divider">
+    <span class="line"></span>
+    <span class="label"><i class="fas fa-chart-simple"></i> MONITORING & EVALUASI</span>
+    <span class="line"></span>
+  </div>
+
+  <div class="single-link-card">
+      <div class="card-header">
+        <i class="fas fa-chart-line"></i>
+        <h3>MONITORING DAN EVALUASI KINERJA BERJENJANG </h3>
+      </div>
+      <div class="card-body">
+        <a href="https://drive.google.com" target="_blank">
+          <span><i class="fas fa-check-circle" style="color:var(--green);margin-right:8px;"></i> Lihat Data Monitoring & Evaluasi Kinerja Berjenjang</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+  </div>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <strong>MEDICAL RECORD</strong>
+  <div class="small">© 2025 RSU An'Nimah • Unit Rekam Medis</div>
+</footer>
 
 </body>
 </html>
