@@ -124,6 +124,7 @@ main{
   border-radius:24px;
   box-shadow:var(--shadow);
   animation:fadeUp .5s ease;
+  position:relative;
 }
 .page-title h1{
   color:var(--green);
@@ -133,19 +134,19 @@ main{
   font-size:32px;
 }
 .admin-btn{
-  position:absolute;
-  top:20px;right:20px;
   background:linear-gradient(135deg,var(--green),var(--green-dark));
   color:#fff;
   padding:8px 18px;
   border-radius:30px;
   font-size:12px;
   text-decoration:none;
-  display:flex;
+  display:inline-flex;
   align-items:center;
   gap:8px;
   box-shadow:var(--shadow);
   transition:.3s;
+  cursor:pointer;
+  border:none;
 }
 .admin-btn:hover{transform:translateY(-2px)}
 .header-bar{
@@ -238,6 +239,164 @@ main{
   margin-bottom:5px;
 }
 
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#1f7f53;
+  color:#fff;
+  padding:12px 28px;
+  border-radius:40px;
+  font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  display:none;
+  z-index:9999;
+}
+.toast.show{display:block;animation:slideUpToast 0.4s ease;}
+.toast.error{background:#d9534f;}
+
+/* ===== LOGIN MODAL ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 35px 35px;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: scaleIn 0.3s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: 300;
+  color: #999;
+  cursor: pointer;
+  transition: 0.3s;
+  line-height: 1;
+}
+.close-btn:hover {
+  color: #333;
+  transform: rotate(90deg);
+}
+
+.login-card h2 {
+  color: var(--green-dark);
+  font-size: 24px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.login-card .subtitle {
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.login-card .input-group {
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.login-card .input-group i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 16px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 13px 15px 13px 45px;
+  border: 2px solid #e5e5e5;
+  border-radius: 14px;
+  font-size: 14px;
+  transition: 0.3s;
+  background: #f9fbfa;
+  box-sizing: border-box;
+}
+.login-card input:focus {
+  outline: none;
+  border-color: var(--green);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(47, 163, 107, 0.1);
+}
+
+.login-card .login-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 6px;
+}
+.login-card .login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(47, 163, 107, 0.3);
+}
+.login-card .login-btn:active {
+  transform: translateY(0);
+}
+
+.login-card .error-msg {
+  color: #d9534f;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 12px;
+  min-height: 20px;
+  display: none;
+}
+.login-card .error-msg.show {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes slideUpToast{
+  from{opacity:0;transform:translate(-50%,20px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
 /* ===== FOOTER ===== */
 footer{
   background:#fff;
@@ -246,14 +405,22 @@ footer{
 }
 .small{font-size:14px;color:#666}
 
-/* ===== ANIM ===== */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1}
-}
-
 @media(max-width:900px){
   .hero-grid{grid-template-columns:1fr}
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 30px 20px 25px;
+    margin: 20px;
+  }
+  .login-card h2 {
+    font-size: 20px;
+  }
+  .logo img {
+    width: 200px;
+    height: auto;
+  }
 }
 </style>
 </head>
@@ -266,9 +433,9 @@ footer{
       <img src="logopanjang.png">
     </div>
 
-    <a href="admin_index.html" class="admin-btn">
+    <button class="admin-btn" id="adminBtn">
       <i class="fas fa-user-shield"></i> Admin Dashboard
-    </a>
+    </button>
   </div>
 
   <nav>
@@ -340,15 +507,140 @@ footer{
 </section>
 </main>
 
+<div class="toast" id="toastMsg"></div>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <div class="login-card">
+      <h2><i class="fas fa-user-shield" style="color:var(--green);margin-right:8px;"></i>Admin Login</h2>
+      <p class="subtitle">Masuk untuk mengelola dashboard</p>
+      
+      <form id="loginForm" autocomplete="off">
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="username" placeholder="Username" required autofocus>
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="login-btn">
+          <i class="fas fa-sign-in-alt"></i> Masuk
+        </button>
+        <div class="error-msg" id="loginError">
+          <i class="fas fa-exclamation-circle"></i> Username atau password salah!
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <footer>
   <strong>MEDICAL RECORD</strong>
   <div class="small">© 2025 RSU An'Nimah • Unit Rekam Medis</div>
 </footer>
 
 <script>
+// ========== USER CREDENTIALS (TAMBAHIN MANUAL DI SINI) ==========
+const USERS = [
+  { username: "heyyog", password: "martil235" },
+  { username: "susi", password: "susi123" },
+  { username: "fatim", password: "fatim123" },
+];
+
+// ========== DOM ELEMENTS ==========
+const modal = document.getElementById('loginModal');
+const adminBtn = document.getElementById('adminBtn');
+const closeBtn = document.getElementById('closeModal');
+const loginForm = document.getElementById('loginForm');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const errorMsg = document.getElementById('loginError');
+
+// ========== MODAL CONTROLS ==========
+function openModal() {
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  usernameInput.value = '';
+  passwordInput.value = '';
+  errorMsg.classList.remove('show');
+  setTimeout(() => usernameInput.focus(), 100);
+}
+
+function closeModal() {
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+  errorMsg.classList.remove('show');
+}
+
+adminBtn.addEventListener('click', openModal);
+closeBtn.addEventListener('click', closeModal);
+
+// Klik di luar modal -> tutup
+modal.addEventListener('click', function(e) {
+  if (e.target === modal) {
+    closeModal();
+  }
+});
+
+// ESC key -> tutup
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && modal.classList.contains('show')) {
+    closeModal();
+  }
+});
+
+// ========== LOGIN HANDLER ==========
+loginForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value.trim();
+  
+  // Cari user di array USERS
+  const userFound = USERS.find(u => 
+    u.username.toLowerCase() === username.toLowerCase() && 
+    u.password === password
+  );
+  
+  if (userFound) {
+    // Login sukses
+    errorMsg.classList.remove('show');
+    showToast(`✅ Selamat datang, ${username}!`);
+    
+    // Redirect ke admin dashboard
+    setTimeout(() => {
+      window.location.href = `admin_index.html?admin=${encodeURIComponent(username)}`;
+    }, 800);
+  } else {
+    // Login gagal
+    errorMsg.classList.add('show');
+    passwordInput.value = '';
+    passwordInput.focus();
+    
+    // Sembunyikan error setelah 3 detik
+    setTimeout(() => {
+      errorMsg.classList.remove('show');
+    }, 3000);
+  }
+});
+
+// ========== TOAST ==========
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toastMsg');
+  toast.textContent = msg;
+  toast.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========== COPY SANDI ==========
 function copySandi(){
   navigator.clipboard.writeText("Bhogast2024")
-  .then(()=>alert("Sandi berhasil disalin 👍"));
+  .then(() => showToast('✅ Sandi berhasil disalin!'))
+  .catch(() => alert("Sandi: Bhogast2024"));
 }
 </script>
 
