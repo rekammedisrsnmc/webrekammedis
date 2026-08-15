@@ -1,175 +1,296 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Admin Asuransi | Medical Record</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="icon" href="logorekammedis.ico">
+<title>Admin Asuransi | Medical Record</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
 :root{
-  --green:#329951;
-  --green-dark:#329951;
-  --green-soft:#ffffff;
-  --bg:#ffffff;
-  --text:#329951;
-  --line:#e5e7eb;
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --bg:#f0f7f3;
+  --card:#ffffff;
+  --shadow:0 4px 20px rgba(0,0,0,.06);
+  --sidebar-width:240px;
 }
 
-*{box-sizing:border-box;font-family:"Segoe UI",sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+
 body{
-  margin:0;
   background:var(--bg);
-  overflow-x:hidden;
+  min-height:100vh;
 }
-.layout{display:flex;min-height:100vh}
 
-/* ===== ANIMATION ===== */
-@keyframes slideLeft{
-  from{opacity:0;transform:translateX(-40px)}
-  to{opacity:1;transform:translateX(0)}
-}
-@keyframes slideUp{
-  from{opacity:0;transform:translateY(30px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes fadeScale{
-  from{opacity:0;transform:scale(.96)}
-  to{opacity:1;transform:scale(1)}
+/* ===== LAYOUT ===== */
+.layout{
+  display:flex;
+  min-height:100vh;
 }
 
 /* ===== SIDEBAR ===== */
 .sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#16a34a,#15803d);
-  color:#fff;
-  padding:25px 20px;
-}
-.brand{text-align:center;margin-bottom:40px}
-.brand i{font-size:42px;margin-bottom:10px}
-.brand h2{margin:0;font-size:20px;font-weight:600}
-
-.menu a{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 18px;margin-bottom:14px;
-  color:#ffffff;text-decoration:none;
-  border-radius:14px;
-  transition:.3s;font-size:15px;
-}
-.menu a:hover,.menu a.active{
-  background:rgba(255,255,255,.18);
-  backdrop-filter:blur(6px);
-  transform:translateX(6px);
+  width:var(--sidebar-width);
+  background:#ffffff;
+  padding:0;
+  flex-shrink:0;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  box-shadow:4px 0 30px rgba(0,0,0,.04);
+  z-index:10;
+  border-right:1px solid #e8f0ec;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s ease;
 }
 
-/* ===== CONTENT ===== */
-.content{
+.sidebar-brand{
+  padding:20px;
+  border-bottom:1px solid #eef5f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sidebar-brand img{
+  height:50px;
+  width:auto;
+}
+
+.sidebar-menu{
+  padding:16px 12px;
   flex:1;
-  padding:35px;
-  animation:fadeScale .5s ease forwards;
-  position:relative;
-  z-index:1;
 }
-
-/* 🔐 HEADER DIPAKSA PALING ATAS */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:30px;
-  animation:slideUp .5s ease forwards;
-  position:relative;
-  z-index:9999;
-}
-.header h1{margin:0;color:var(--text)}
-
-.user{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  position:relative;
-  z-index:9999;
-}
-.header-right{
+.sidebar-menu a{
   display:flex;
   align-items:center;
-  gap:12px;
-  position:relative;
-  z-index:9999;
-}
-.logout{
-  background:#ef4444;
-  color:#fff;
-  border:none;
+  gap:14px;
   padding:10px 16px;
-  border-radius:999px;
-  cursor:pointer;
-  font-size:13px;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  transition:.3s;
-  position:relative;
-  z-index:9999;
+  color:#5a6b62;
+  text-decoration:none;
+  border-radius:10px;
+  transition:all .2s;
+  font-weight:500;
+  font-size:14px;
+  margin-bottom:2px;
 }
-.logout:hover{
-  background:#dc2626;
-  transform:translateY(-2px);
+.sidebar-menu a i{
+  width:20px;
+  text-align:center;
+  font-size:15px;
+  color:#9ab0a4;
+  transition:.2s;
+}
+.sidebar-menu a:hover{
+  background:#f0f7f3;
+  color:var(--green-dark);
+}
+.sidebar-menu a:hover i{
+  color:var(--green);
+}
+.sidebar-menu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  box-shadow:0 4px 16px rgba(47,163,107,.25);
+}
+.sidebar-menu a.active i{
+  color:#fff;
 }
 
 /* ===== SUB MENU IMUT ===== */
 .menu-toggle{
   justify-content:space-between;
+  cursor:pointer;
 }
-
-.arrow{
+.menu-toggle .arrow{
   margin-left:auto;
-  transition:.3s;
+  transition:.4s;
+  font-size:12px;
 }
-
 .submenu{
   max-height:0;
   overflow:hidden;
-  margin-left:25px;
-  transition:max-height .35s ease;
+  margin-left:20px;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1);
 }
-
 .submenu a{
-  font-size:14px;
-  padding:10px 18px;
-  margin-bottom:8px;
-  background:rgba(255,255,255,.12);
-  border-radius:12px;
+  font-size:13px;
+  padding:8px 16px;
+  margin-bottom:2px;
+  background:rgba(47,163,107,.06);
+  border-radius:8px;
+  color:#5a6b62;
 }
-
+.submenu a i{
+  font-size:13px;
+  width:18px;
+}
+.submenu a:hover{
+  background:rgba(47,163,107,.12);
+  color:var(--green-dark);
+}
+.submenu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+}
+.submenu a.active i{
+  color:#fff;
+}
 .submenu.show{
-  max-height:350px;
+  max-height:400px;
 }
-
 .submenu.show ~ .menu-toggle .arrow{
   transform:rotate(180deg);
 }
 
-/* ===== CARD ===== */
+/* ===== TOGGLE SIDEBAR MOBILE ===== */
+.sidebar-toggle{
+  display:none;
+  position:fixed;
+  top:12px;
+  left:12px;
+  z-index:20;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(47,163,107,.3);
+}
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.4);
+  z-index:9;
+}
+
+/* ===== CONTENT ===== */
+.content{
+  flex:1;
+  padding:30px 35px;
+  min-width:0;
+}
+
+/* HEADER */
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.page-header h1{
+  font-size:24px;
+  font-weight:700;
+  color:#1a2e24;
+}
+.page-header h1 span{
+  color:var(--green);
+}
+
+/* USER ADMIN - POJOK KANAN */
+.user-admin{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+  padding:6px 18px 6px 12px;
+  border-radius:50px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
+}
+.user-admin .avatar{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:14px;
+  color:#fff;
+}
+.user-admin .user-name{
+  font-size:14px;
+  font-weight:600;
+  color:#2d3e35;
+}
+.user-admin .logout-btn{
+  background:transparent;
+  border:none;
+  color:#bccfc4;
+  cursor:pointer;
+  font-size:16px;
+  padding:4px 6px;
+  border-radius:50%;
+  transition:.2s;
+}
+.user-admin .logout-btn:hover{
+  color:#d9534f;
+  background:#fde8e8;
+}
+
+/* CARD */
 .card{
   background:#fff;
-  border-radius:18px;
-  padding:26px;
-  margin-bottom:25px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-  opacity:0;
-  animation:slideUp .4s ease forwards;
-  position:relative;
-  z-index:1;
+  border-radius:14px;
+  padding:24px 28px;
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
+  transition:.3s;
 }
-.card:nth-of-type(1){animation-delay:.10s}
-.card:nth-of-type(2){animation-delay:.3s}
+.card:hover{
+  border-color:var(--green);
+}
+.card h3{
+  color:var(--green-dark);
+  font-size:18px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.card h3 i{
+  color:var(--green);
+}
 
-.card h3{margin-top:0;color:var(--green-dark)}
+label{
+  font-size:13px;
+  font-weight:600;
+  color:#2d3e35;
+  display:block;
+  margin-bottom:4px;
+}
+input, textarea{
+  width:100%;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid #e8f0ec;
+  margin-bottom:14px;
+  font-size:14px;
+  background:#fafcfa;
+  transition:.2s;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+input:focus, textarea:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(47,163,107,.1);
+}
 
-/* FORM */
 .form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -179,24 +300,7 @@ body{
   grid-column:1 / -1;
 }
 
-label{font-size:13px;color:#065f46;font-weight:600;display:block;margin-bottom:4px;}
-input,textarea{
-  width:100%;
-  padding:11px 14px;
-  border-radius:10px;
-  border:1px solid var(--line);
-  margin-bottom:6px;
-  font-size:14px;
-  transition:0.3s;
-}
-input:focus, textarea:focus{
-  border-color:var(--green);
-  outline:none;
-  box-shadow:0 0 0 3px rgba(50,153,81,0.15);
-}
-textarea{min-height:80px;resize:vertical}
-
-.btn-row{
+.btn-group{
   grid-column:1 / -1;
   display:flex;
   gap:12px;
@@ -204,135 +308,125 @@ textarea{min-height:80px;resize:vertical}
   margin-top:6px;
 }
 
-button.primary{
-  background:var(--green);
+.btn-primary{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
   color:#fff;
   border:none;
-  padding:12px 24px;
+  padding:12px 28px;
   border-radius:12px;
+  font-size:14px;
   font-weight:600;
   cursor:pointer;
   transition:.3s;
   display:inline-flex;
   align-items:center;
   gap:8px;
-  font-size:14px;
 }
-button.primary:hover{background:var(--green-dark);transform:translateY(-2px);}
-button.primary:disabled{
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(47,163,107,.25);
+}
+.btn-primary:disabled{
   opacity:0.6;
   cursor:not-allowed;
   transform:none;
 }
-
-button.danger{
-  background:#ef4444;
-  color:#fff;
-  border:none;
-  padding:12px 24px;
-  border-radius:12px;
-  font-weight:600;
-  cursor:pointer;
-  transition:.3s;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  font-size:14px;
+.btn-primary:disabled:hover{
+  transform:none;
+  box-shadow:none;
 }
-button.danger:hover{background:#dc2626;transform:translateY(-2px);}
 
-button.warning{
+.btn-warning{
   background:#f59e0b;
   color:#fff;
   border:none;
-  padding:12px 24px;
+  padding:12px 28px;
   border-radius:12px;
+  font-size:14px;
   font-weight:600;
   cursor:pointer;
   transition:.3s;
   display:inline-flex;
   align-items:center;
   gap:8px;
-  font-size:14px;
 }
-button.warning:hover{background:#d97706;transform:translateY(-2px);}
+.btn-warning:hover{
+  background:#d97706;
+  transform:translateY(-2px);
+}
 
-button.small{
-  padding:6px 14px;
-  font-size:13px;
+.btn-danger{
+  background:#ef4444;
+  color:#fff;
   border:none;
-  border-radius:8px;
+  padding:12px 28px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:600;
   cursor:pointer;
   transition:.3s;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
 }
-button.small-danger{
+.btn-danger:hover{
+  background:#dc2626;
+  transform:translateY(-2px);
+}
+
+.btn-small-danger{
   background:#fee2e2;
   color:#b91c1c;
   border:1px solid #fecaca;
+  padding:6px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:.3s;
+  font-size:13px;
 }
-button.small-danger:hover{
+.btn-small-danger:hover{
   background:#fecaca;
 }
 
-/* ===== LOADING SPINNER SEDERHANA ===== */
-.loading-wrapper {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  color:#555;
-  padding:30px 0;
-  justify-content:center;
+#status{
+  grid-column:1 / -1;
+  font-size:14px;
+  font-weight:600;
+  margin-top:-6px;
+  color:var(--green);
 }
 
-.spinner {
-  width:20px;
-  height:20px;
-  border:3px solid #ddd;
-  border-top:3px solid var(--green);
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform:rotate(360deg); }
-}
-
-/* ===== LIST ===== */
+/* LIST ITEM */
 .item{
   display:flex;
   justify-content:space-between;
   align-items:center;
   padding:14px 16px;
-  border-bottom:1px solid var(--line);
-  opacity:0;
-  animation:slideUp .45s ease forwards;
+  border-bottom:1px solid #e8f0ec;
   transition:.3s;
 }
 .item:hover{
-  background:#f8faf8;
+  background:#f8fbf9;
   border-radius:10px;
 }
 .item:last-child{
   border-bottom:none;
 }
-
 .item .left{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
   flex:1;
 }
 .item .left .nama{
   font-weight:600;
-  color:#065f46;
+  color:var(--green-dark);
   font-size:16px;
 }
 .item .left .detail{
   font-size:13px;
-  color:#6b7280;
+  color:#9ab0a4;
   display:flex;
   gap:16px;
   flex-wrap:wrap;
+  margin-top:4px;
 }
 .item .left .detail span{
   display:inline-flex;
@@ -345,31 +439,34 @@ button.small-danger:hover{
   padding:2px 8px;
   border-radius:4px;
   font-size:13px;
+  color:#2d3e35;
 }
 .item .right{
   display:flex;
   gap:8px;
   align-items:center;
 }
-.item .right a{
+.item .right .link-btn{
   color:var(--green);
   text-decoration:none;
   font-size:13px;
   padding:4px 12px;
   border-radius:8px;
-  background:#f0fdf4;
+  background:#f0f7f3;
   transition:.3s;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
 }
-.item .right a:hover{
+.item .right .link-btn:hover{
   background:var(--green);
   color:#fff;
 }
 
-/* ===== EMPTY STATE ===== */
 .empty-state{
   text-align:center;
   padding:50px 20px;
-  color:#999;
+  color:#9ab0a4;
 }
 .empty-state i{
   font-size:50px;
@@ -379,25 +476,22 @@ button.small-danger:hover{
   margin-bottom:15px;
 }
 
-/* ===== TOAST ===== */
-.toast{
-  position:fixed;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#16a34a;
-  color:#fff;
-  padding:12px 28px;
-  border-radius:40px;
-  font-weight:500;
-  box-shadow:0 8px 24px rgba(0,0,0,0.2);
-  display:none;
-  z-index:99999;
+.loading-wrapper{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  justify-content:center;
+  padding:40px 0;
+  color:#9ab0a4;
 }
-.toast.show{display:block;animation:slideUp 0.4s ease;}
-.toast.error{background:#ef4444;}
-
-/* ===== SPINNER SMALL (untuk button) ===== */
+.spinner-small{
+  width:20px;
+  height:20px;
+  border:3px solid #e8f0ec;
+  border-top:3px solid var(--green);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
 .spinner-sm{
   display:inline-block;
   width:18px;
@@ -410,32 +504,99 @@ button.small-danger:hover{
   margin-right:6px;
 }
 
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
 footer{
   text-align:center;
   font-size:13px;
-  color:#065f46;
-  margin-top:40px;
-  opacity:0;
-  animation:fadeScale .5s ease forwards;
-  animation-delay:.4s;
-  position:relative;
-  z-index:1;
+  color:#bccfc4;
+  margin-top:30px;
+  padding-top:16px;
+  border-top:1px solid #e8f0ec;
 }
 
-/* ===== RESPONSIVE ===== */
-@media(max-width:900px){
-  .layout{flex-direction:column}
-  .sidebar{width:100%}
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#1a2e24;
+  color:#fff;
+  padding:12px 28px;
+  border-radius:50px;
+  font-weight:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  display:none;
+  z-index:9999;
+  font-size:14px;
+}
+.toast.show{display:block;animation:slideUpToast .4s ease;}
+.toast.error{background:#d9534f;}
+
+@keyframes slideUpToast{
+  from{opacity:0;transform:translate(-50%,20px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media(max-width:768px){
+  .sidebar-toggle{
+    display:block;
+  }
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    transform:translateX(-100%);
+    height:100vh;
+    width:280px;
+    z-index:10;
+    box-shadow:4px 0 40px rgba(0,0,0,.15);
+  }
+  .sidebar.open{
+    transform:translateX(0);
+  }
+  .sidebar-overlay.show{
+    display:block;
+  }
+  .content{
+    padding:18px 16px;
+    padding-top:70px;
+  }
+  .page-header{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+  .page-header h1{
+    font-size:20px;
+  }
+  .user-admin{
+    justify-content:center;
+    padding:6px 14px;
+  }
+  .user-admin .user-name{
+    font-size:13px;
+  }
+  .card{
+    padding:18px 16px;
+  }
+  .card h3{
+    font-size:16px;
+  }
   .form-grid{
     grid-template-columns:1fr;
   }
   .form-grid .full{
     grid-column:auto;
   }
-  .btn-row{
+  .btn-group{
     flex-direction:column;
   }
-  .btn-row button{
+  .btn-group button{
     width:100%;
     justify-content:center;
   }
@@ -447,126 +608,159 @@ footer{
     margin-left:auto;
   }
 }
+
+@media(max-width:480px){
+  .user-admin .user-name{
+    display:none;
+  }
+  .item .left .detail{
+    flex-direction:column;
+    gap:4px;
+  }
+}
+
+@media(min-width:769px){
+  .sidebar-toggle{
+    display:none !important;
+  }
+  .sidebar-overlay{
+    display:none !important;
+  }
+}
 </style>
 </head>
 
 <body>
+
+<!-- ===== TOGGLE SIDEBAR MOBILE ===== -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 <div class="layout">
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="brand">
-    <i class="fas fa-notes-medical"></i>
-    <h2>ADMIN MR</h2>
-  </div>
-  <nav class="menu">
-    <a href="admin_index.html"><i class="fas fa-gauge-high"></i> Dashboard</a>
-    <a href="admin_regulasi.html"><i class="fas fa-file-medical"></i> Regulasi</a>
-    <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan Pasien</a>
-    <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
-    <a href="admin_rekapitulasi_scan.html"><i class="fas fa-trash"></i> Rekapitulasi Scan</a>
-    <a href="javascript:void(0)" class="menu-toggle" onclick="toggleImut()">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="logopanjang.png" alt="Medical Record">
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="admin_index.html"><i class="fas fa-gauge-high"></i> Dashboard</a>
+      <a href="admin_regulasi.html"><i class="fas fa-file-medical"></i> Regulasi</a>
+      <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan</a>
+      <a href="admin_jadwal.html"><i class="fas fa-calendar-check"></i> Jadwal</a>
+      
+      <!-- ===== IMUT DROPDOWN ===== -->
+      <a href="javascript:void(0)" class="menu-toggle" onclick="toggleImut()">
         <i class="fas fa-chart-line"></i>
         <span>IMUT</span>
         <i class="fas fa-chevron-down arrow" id="imutArrow"></i>
       </a>
-
       <div class="submenu" id="imutSubmenu">
         <a href="admin_imutrekammedis.html">
-            <i class="fas fa-file-medical"></i>Rekam Medis
+          <i class="fas fa-file-medical"></i> Rekam Medis
         </a>
         <a href="admin_imutpendaftaran.html">
-            <i class="fas fa-user-plus"></i>Pendaftaran
+          <i class="fas fa-user-plus"></i> Pendaftaran
         </a>
-        <a href="admin_i.html">
-            <i class="fas fa-headset"></i>Customer Care
+        <a href="admin_imutcustomercare.html">
+          <i class="fas fa-headset"></i> Customer Care
         </a>
+      </div>
+
+      <a href="admin_indikatorbor.html"><i class="fas fa-chart-line"></i> Indikator</a>
+      <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
+      <a class="active"><i class="fas fa-shield-alt"></i> Asuransi</a>
+    </nav>
+  </aside>
+
+  <!-- ===== CONTENT ===== -->
+  <main class="content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <h1>Daftar <span>Asuransi</span></h1>
+      
+      <div class="user-admin">
+        <div class="avatar" id="avatarLetter">A</div>
+        <span class="user-name" id="userNameDisplay">Admin</span>
+        <button class="logout-btn" onclick="logout()" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
     </div>
-    <a href="admin_indikatorbor.html"><i class="fas fa-chart-simple"></i> Indikator</a>
-    <a class="active" href="admin_asuransi.html"><i class="fas fa-shield-alt"></i> Asuransi</a>
-  </nav>
-</aside>
 
-<!-- CONTENT -->
-<main class="content">
+    <!-- CARD INPUT -->
+    <div class="card">
+      <h3><i class="fas fa-pen-to-square"></i> Input Data Asuransi</h3>
 
-<div class="header">
-  <h1>Data Asuransi</h1>
-
-  <div class="header-right">
-    <div class="user">
-      <i class="fas fa-user-shield"></i> Admin
+      <div class="form-grid">
+        <div>
+          <label>Nama Asuransi *</label>
+          <input id="asuransi" placeholder="Contoh: BPJS Kesehatan">
+        </div>
+        <div>
+          <label>Link Aplikasi / Website</label>
+          <input id="linkApp" placeholder="https://...">
+        </div>
+        <div>
+          <label>Akun / Username</label>
+          <input id="akun" placeholder="Username">
+        </div>
+        <div>
+          <label>Password</label>
+          <input id="password" placeholder="Password" type="password">
+        </div>
+        <div class="full">
+          <label>Nomor Provider / Telepon</label>
+          <input id="nomorProvider" placeholder="Contoh: 021-1234567 atau 0812-3456-7890">
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn-primary" id="simpanBtn" onclick="simpan()">
+            <i class="fas fa-save"></i> Simpan
+          </button>
+          <button class="btn-warning" onclick="resetForm()">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+          <button class="btn-danger" onclick="hapusSemua()">
+            <i class="fas fa-trash"></i> Hapus Semua
+          </button>
+        </div>
+        <p id="status"></p>
+      </div>
     </div>
-    <button class="logout" id="btnLogout">
-      <i class="fas fa-right-from-bracket"></i> Logout
-    </button>
-  </div>
+
+    <!-- CARD LIST -->
+    <div class="card">
+      <h3><i class="fas fa-list"></i> Daftar Asuransi</h3>
+      <div id="list">
+        <div class="loading-wrapper">
+          <div class="spinner-small"></div>
+          <span>Memuat data asuransi...</span>
+        </div>
+      </div>
+    </div>
+
+    <footer>© 2025 RSU An'Nimah • Unit Rekam Medis</footer>
+  </main>
 </div>
 
-<div class="card">
-<h3><i class="fas fa-pen" style="color:var(--green);margin-right:8px;"></i> Input Data Asuransi</h3>
-
-<div class="form-grid">
-  <div>
-    <label>Nama Asuransi *</label>
-    <input id="asuransi" placeholder="Contoh: BPJS Kesehatan" />
-  </div>
-  <div>
-    <label>Link Aplikasi / Website</label>
-    <input id="linkApp" placeholder="https://..." />
-  </div>
-  <div>
-    <label>Akun / Username</label>
-    <input id="akun" placeholder="Username" />
-  </div>
-  <div>
-    <label>Password</label>
-    <input id="password" placeholder="Password" type="password" />
-  </div>
-  <div class="full">
-    <label>Nomor Provider / Telepon</label>
-    <input id="nomorProvider" placeholder="Contoh: 021-1234567 atau 0812-3456-7890" />
-  </div>
-  <div class="btn-row">
-    <button class="primary" id="simpanBtn" onclick="simpan()">
-      <i class="fas fa-save"></i> Simpan
-    </button>
-    <button class="warning" onclick="resetForm()">
-      <i class="fas fa-undo"></i> Reset
-    </button>
-    <button class="danger" onclick="hapusSemua()">
-      <i class="fas fa-trash"></i> Hapus Semua
-    </button>
-  </div>
-  <p id="status" style="grid-column:1/-1;font-size:14px;color:#16a34a;margin-top:-6px;"></p>
-</div>
-</div>
-
-<div class="card">
-<h3><i class="fas fa-list" style="color:var(--green);margin-right:8px;"></i> Daftar Asuransi</h3>
-<div id="list">
-  <!-- LOADING SPINNER SEDERHANA -->
-  <div class="loading-wrapper">
-    <div class="spinner"></div>
-    <span>Memuat data asuransi...</span>
-  </div>
-</div>
-</div>
-
-<footer>© 2025 Admin Medical Record RSU An Ni'mah</footer>
-</main>
-</div>
-
+<!-- ===== TOAST ===== -->
 <div class="toast" id="toastMsg"></div>
 
 <script>
-// ========== SESSION CHECK ==========
-if(sessionStorage.getItem("adminLogin") !== "true"){
-  window.location.href = "admin_index.html";
+// ========== CEK LOGIN ==========
+if (!sessionStorage.getItem('adminName')) {
+  window.location.href = 'index.html';
 }
 
-// ========== KONFIGURASI ==========
-const API_URL = "https://script.google.com/macros/s/AKfycbyCmV0DgMN8R2zxQZdnZLSCS7sBmAjcL7E0pMsX7eEqosgRtaPIOxE2l4hG_UVocx6VMg/exec";
+// ========== GET ADMIN USERNAME ==========
+function getAdminName() {
+  return sessionStorage.getItem('adminName') || 'Admin';
+}
 
 // ========== TOAST ==========
 function showToast(msg, isError = false) {
@@ -577,31 +771,62 @@ function showToast(msg, isError = false) {
   toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ========== SHOW LOADING ==========
-function showLoading() {
+// ========== LOGOUT ==========
+function logout() {
+  if (confirm('Yakin ingin logout?')) {
+    sessionStorage.removeItem('adminName');
+    sessionStorage.removeItem('toastShown');
+    showToast('👋 Logout berhasil!');
+    setTimeout(() => window.location.href = 'index.html', 600);
+  }
+}
+
+// ========== SIDEBAR TOGGLE MOBILE ==========
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+
+// ========== TOGGLE IMUT DROPDOWN ==========
+function toggleImut() {
+  const sub = document.getElementById('imutSubmenu');
+  const arrow = document.getElementById('imutArrow');
+  sub.classList.toggle('show');
+  arrow.classList.toggle('rotate');
+}
+
+// ========== ASURANSI ==========
+const API_URL = "https://script.google.com/macros/s/AKfycbyCmV0DgMN8R2zxQZdnZLSCS7sBmAjcL7E0pMsX7eEqosgRtaPIOxE2l4hG_UVocx6VMg/exec";
+
+// ========== LOAD DATA ==========
+function loadData() {
   const box = document.getElementById('list');
   box.innerHTML = `
     <div class="loading-wrapper">
-      <div class="spinner"></div>
+      <div class="spinner-small"></div>
       <span>Memuat data asuransi...</span>
     </div>
   `;
-}
 
-// ========== LOAD DATA ==========
-function load() {
-  showLoading();
-  
   fetch(`${API_URL}?action=get`)
     .then(res => {
       if (!res.ok) throw new Error('Network error');
       return res.json();
     })
-    .then(d => {
-      render(d);
+    .then(data => {
+      render(data);
     })
     .catch(err => {
-      console.error('❌ Error load:', err);
+      console.error('Error load:', err);
       showToast('⚠️ Gagal memuat data', true);
       render([]);
     });
@@ -609,14 +834,14 @@ function load() {
 
 // ========== RENDER ==========
 function render(data) {
-  const box = document.getElementById("list");
+  const box = document.getElementById('list');
   
   if (!data || data.length === 0) {
     box.innerHTML = `
       <div class="empty-state">
         <i class="fas fa-inbox"></i>
         <p>Belum ada data asuransi</p>
-        <p style="font-size:13px;color:#bbb;margin-top:4px;">Silakan tambahkan data di form atas</p>
+        <p style="font-size:13px;color:#bccfc4;margin-top:4px;">Silakan tambahkan data di form atas</p>
       </div>
     `;
     return;
@@ -632,7 +857,7 @@ function render(data) {
     const timestamp = item[5] || '';
     
     html += `
-      <div class="item" style="animation-delay:${index * 0.06}s">
+      <div class="item">
         <div class="left">
           <div class="nama">${asuransi}</div>
           <div class="detail">
@@ -643,8 +868,8 @@ function render(data) {
           </div>
         </div>
         <div class="right">
-          ${linkApp ? `<a href="${linkApp}" target="_blank"><i class="fas fa-external-link-alt"></i> Buka</a>` : ''}
-          <button class="small small-danger" onclick="hapusItem(${index})" title="Hapus">
+          ${linkApp ? `<a href="${linkApp}" target="_blank" class="link-btn"><i class="fas fa-external-link-alt"></i> Buka</a>` : ''}
+          <button class="btn-small-danger" onclick="hapusItem(${index})" title="Hapus">
             <i class="fas fa-trash"></i>
           </button>
         </div>
@@ -673,13 +898,12 @@ function simpan() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-sm"></span> Menyimpan...';
   document.getElementById('status').textContent = '';
+  document.getElementById('status').style.color = 'var(--green)';
   
   fetch(API_URL, {
     method: 'POST',
     mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: 'add',
       asuransi: asuransi,
@@ -693,10 +917,10 @@ function simpan() {
     showToast('✅ Data berhasil disimpan!');
     document.getElementById('status').textContent = '✅ Data berhasil disimpan!';
     resetForm();
-    setTimeout(load, 500);
+    setTimeout(loadData, 500);
   })
   .catch(err => {
-    console.error('❌ Error save:', err);
+    console.error('Error save:', err);
     showToast('⚠️ Gagal menyimpan data', true);
     document.getElementById('status').textContent = '❌ Gagal menyimpan data';
     document.getElementById('status').style.color = '#ef4444';
@@ -725,9 +949,7 @@ function hapusItem(index) {
   fetch(API_URL, {
     method: 'POST',
     mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: 'delete',
       index: index
@@ -735,10 +957,10 @@ function hapusItem(index) {
   })
   .then(() => {
     showToast('🗑️ Data dihapus');
-    setTimeout(load, 500);
+    setTimeout(loadData, 500);
   })
   .catch(err => {
-    console.error('❌ Error delete:', err);
+    console.error('Error delete:', err);
     showToast('⚠️ Gagal menghapus data', true);
   });
 }
@@ -750,19 +972,17 @@ function hapusSemua() {
   fetch(API_URL, {
     method: 'POST',
     mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: 'deleteAll'
     })
   })
   .then(() => {
     showToast('🗑️ Semua data dihapus');
-    setTimeout(load, 500);
+    setTimeout(loadData, 500);
   })
   .catch(err => {
-    console.error('❌ Error delete all:', err);
+    console.error('Error delete all:', err);
     showToast('⚠️ Gagal menghapus data', true);
   });
 }
@@ -777,24 +997,32 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ========== LOGOUT ==========
-document.getElementById("btnLogout").addEventListener("click", function(){
-  if(confirm("Yakin ingin logout?")){
-    sessionStorage.removeItem("adminLogin");
-    window.location.href = "admin_index.html";
+// ========== ONLOAD ==========
+document.addEventListener("DOMContentLoaded", function() {
+  const name = getAdminName();
+  document.getElementById('userNameDisplay').textContent = name;
+  document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
+  
+  loadData();
+  
+  const toastShown = sessionStorage.getItem('toastShown');
+  if (!toastShown) {
+    setTimeout(() => showToast(`👋 Selamat datang, ${name}!`), 300);
+    sessionStorage.setItem('toastShown', 'true');
   }
 });
 
-// ========== TOGGLE IMUT ==========
-function toggleImut(){
-  const sub = document.getElementById("imutSubmenu");
-  const arrow = document.getElementById("imutArrow");
-  sub.classList.toggle("show");
-  arrow.classList.toggle("rotate");
-}
+// ========== SHORTCUT ==========
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') logout();
+});
 
-// ========== INIT ==========
-window.onload = load;
+// ========== CLOSE SIDEBAR SAAT RESIZE ==========
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    closeSidebar();
+  }
+});
 </script>
 
 </body>
