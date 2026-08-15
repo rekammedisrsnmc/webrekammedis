@@ -1,412 +1,1001 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Admin IMUT | Medical Record</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="icon" href="logorekammedis.ico">
+<title>Admin IMUT Rekam Medis | Medical Record</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 :root{
-  --green:#16a34a;
-  --bg:#ffffff;
-  --line:#e5e7eb;
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --bg:#f0f7f3;
+  --card:#ffffff;
+  --shadow:0 4px 20px rgba(0,0,0,.06);
+  --sidebar-width:240px;
 }
-*{box-sizing:border-box;font-family:"Segoe UI",sans-serif}
-body{margin:0;background:var(--bg)}
-.layout{display:flex;min-height:100vh}
 
-/* SIDEBAR */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+
+body{
+  background:var(--bg);
+  min-height:100vh;
+}
+
+/* ===== LAYOUT ===== */
+.layout{
+  display:flex;
+  min-height:100vh;
+}
+
+/* ===== SIDEBAR ===== */
 .sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#16a34a,#15803d);
-  color:#fff;
-  padding:25px 20px;
-}
-.brand{text-align:center;margin-bottom:40px}
-.brand i{font-size:42px;margin-bottom:10px}
-.brand h2{margin:0;font-size:20px;font-weight:600}
-
-.menu a{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 18px;margin-bottom:14px;
-  color:#ffffff;text-decoration:none;
-  border-radius:14px;
-  transition:.3s;
-}
-.menu a:hover,.menu a.active{
-  background:rgba(255,255,255,.18);
-  transform:translateX(6px);
+  width:var(--sidebar-width);
+  background:#ffffff;
+  padding:0;
+  flex-shrink:0;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  box-shadow:4px 0 30px rgba(0,0,0,.04);
+  z-index:10;
+  border-right:1px solid #e8f0ec;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s ease;
 }
 
-/* CONTENT */
-.content{
+.sidebar-brand{
+  padding:20px;
+  border-bottom:1px solid #eef5f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sidebar-brand img{
+  height:50px;
+  width:auto;
+}
+
+.sidebar-menu{
+  padding:16px 12px;
   flex:1;
-  padding:35px;
-  opacity:0;
-  transform:translateY(20px);
-  transition:.6s;
 }
-.content.show{opacity:1;transform:none}
+.sidebar-menu a{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:10px 16px;
+  color:#5a6b62;
+  text-decoration:none;
+  border-radius:10px;
+  transition:all .2s;
+  font-weight:500;
+  font-size:14px;
+  margin-bottom:2px;
+}
+.sidebar-menu a i{
+  width:20px;
+  text-align:center;
+  font-size:15px;
+  color:#9ab0a4;
+  transition:.2s;
+}
+.sidebar-menu a:hover{
+  background:#f0f7f3;
+  color:var(--green-dark);
+}
+.sidebar-menu a:hover i{
+  color:var(--green);
+}
+.sidebar-menu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  box-shadow:0 4px 16px rgba(47,163,107,.25);
+}
+.sidebar-menu a.active i{
+  color:#fff;
+}
 
-.header{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:30px;
-}
-.header h1{margin:0;color:#166534}
-
-.logout{
-  background:#ef4444;color:#fff;
-  border:none;padding:10px 16px;
-  border-radius:999px;cursor:pointer;
-}
 /* ===== SUB MENU IMUT ===== */
 .menu-toggle{
   justify-content:space-between;
+  cursor:pointer;
 }
-
-.arrow{
+.menu-toggle .arrow{
   margin-left:auto;
-  transition:.3s;
+  transition:.4s;
+  font-size:12px;
 }
-
 .submenu{
   max-height:0;
   overflow:hidden;
-  margin-left:25px;
-  transition:max-height .35s ease;
+  margin-left:20px;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1);
 }
-
 .submenu a{
-  font-size:14px;
-  padding:10px 18px;
-  margin-bottom:8px;
-  background:rgba(255,255,255,.12);
-  border-radius:12px;
+  font-size:13px;
+  padding:8px 16px;
+  margin-bottom:2px;
+  background:rgba(47,163,107,.06);
+  border-radius:8px;
+  color:#5a6b62;
 }
-
+.submenu a i{
+  font-size:13px;
+  width:18px;
+}
+.submenu a:hover{
+  background:rgba(47,163,107,.12);
+  color:var(--green-dark);
+}
+.submenu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+}
+.submenu a.active i{
+  color:#fff;
+}
 .submenu.show{
-  max-height:350px;
+  max-height:400px;
 }
-
 .submenu.show ~ .menu-toggle .arrow{
   transform:rotate(180deg);
 }
+
+/* ===== TOGGLE SIDEBAR MOBILE ===== */
+.sidebar-toggle{
+  display:none;
+  position:fixed;
+  top:12px;
+  left:12px;
+  z-index:20;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(47,163,107,.3);
+}
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.4);
+  z-index:9;
+}
+
+/* ===== CONTENT ===== */
+.content{
+  flex:1;
+  padding:30px 35px;
+  min-width:0;
+}
+
+/* HEADER */
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.page-header h1{
+  font-size:24px;
+  font-weight:700;
+  color:#1a2e24;
+}
+.page-header h1 span{
+  color:var(--green);
+}
+.page-header h1 small{
+  font-size:14px;
+  font-weight:400;
+  color:#9ab0a4;
+  display:block;
+  margin-top:2px;
+}
+
+/* USER ADMIN - POJOK KANAN */
+.user-admin{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+  padding:6px 18px 6px 12px;
+  border-radius:50px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
+}
+.user-admin .avatar{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:14px;
+  color:#fff;
+}
+.user-admin .user-name{
+  font-size:14px;
+  font-weight:600;
+  color:#2d3e35;
+}
+.user-admin .logout-btn{
+  background:transparent;
+  border:none;
+  color:#bccfc4;
+  cursor:pointer;
+  font-size:16px;
+  padding:4px 6px;
+  border-radius:50%;
+  transition:.2s;
+}
+.user-admin .logout-btn:hover{
+  color:#d9534f;
+  background:#fde8e8;
+}
+
 /* CARD */
 .card{
   background:#fff;
-  border-radius:18px;
-  padding:26px;
-  margin-bottom:25px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-  opacity:0;
-  transform:translateY(20px);
-  transition:.5s;
+  border-radius:14px;
+  padding:24px 28px;
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
+  transition:.3s;
 }
-.card-text{
-color:#252525
+.card:hover{
+  border-color:var(--green);
 }
-.card.show{opacity:1;transform:none}
+.card h3{
+  color:var(--green-dark);
+  font-size:18px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.card h3 i{
+  color:var(--green);
+}
 
-label{font-size:13px;color:#166534}
-select,input{
-  padding:8px;
+label{
+  font-size:13px;
+  font-weight:600;
+  color:#2d3e35;
+  display:block;
+  margin-bottom:4px;
+}
+select, input{
+  width:100%;
+  padding:10px 14px;
   border-radius:10px;
-  border:1px solid var(--line);
-  margin:6px 0 14px;
+  border:1px solid #e8f0ec;
+  margin-bottom:14px;
+  font-size:14px;
+  background:#fafcfa;
+  transition:.2s;
+}
+select:focus, input:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(47,163,107,.1);
 }
 
-/* TABLE */
-.table-wrapper{overflow-x:auto}
+.filter-group{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;
+  margin-bottom:10px;
+}
+.filter-group select{
+  margin-bottom:0;
+}
+
+.table-wrapper{
+  overflow-x:auto;
+  margin-top:12px;
+}
 table{
   width:100%;
   border-collapse:collapse;
+  font-size:13px;
   min-width:700px;
 }
 th,td{
-  border:1px solid var(--line);
-  padding:4px;
+  border:1px solid #e8f0ec;
+  padding:6px 8px;
   text-align:center;
-  font-size:12px;
+}
+th{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  font-weight:600;
   white-space:nowrap;
 }
-th{background:var(--green);color:#fff}
 td input{
-  width:42px;
-  padding:4px;
-  font-size:12px;
+  width:50px;
+  padding:4px 6px;
+  margin:0;
   text-align:center;
+  border-radius:6px;
+  border:1px solid #e8f0ec;
+  font-size:12px;
+  background:#fafcfa;
+}
+td input:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(47,163,107,.1);
+}
+td input[readonly]{
+  background:#f0f7f3;
+  font-weight:700;
+  color:var(--green-dark);
 }
 
-/* BUTTON */
-button.primary{
-  background:var(--green);
-  color:#fff;border:none;
-  padding:12px 20px;
+.btn-primary{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  border:none;
+  padding:12px 28px;
   border-radius:12px;
+  font-size:14px;
+  font-weight:600;
   cursor:pointer;
+  transition:.3s;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(47,163,107,.25);
+}
+.btn-primary:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+  transform:none;
+}
+.btn-primary:disabled:hover{
+  transform:none;
+  box-shadow:none;
 }
 
 /* SUMMARY */
-.summary{
+.summary-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:18px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
 }
-.summary .box{
-  background:#f0fdf4;
-  border-radius:16px;
-  padding:20px;
+.summary-box{
+  background:#f0f7f3;
+  border-radius:12px;
+  padding:18px 20px;
   text-align:center;
+  border:1px solid #e8f0ec;
 }
-.summary h2{margin:0;color:#065f46}
+.summary-box p{
+  font-size:13px;
+  color:#9ab0a4;
+  margin-bottom:4px;
+}
+.summary-box h2{
+  font-size:24px;
+  color:var(--green-dark);
+}
+.summary-box h2 .percent{
+  font-size:18px;
+}
 
-/* LOADING */
-.loading{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.25);
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;
+footer{
+  text-align:center;
+  font-size:13px;
+  color:#bccfc4;
+  margin-top:30px;
+  padding-top:16px;
+  border-top:1px solid #e8f0ec;
 }
-.loading.show{opacity:1;pointer-events:auto}
-.spinner{
-  width:30px;height:30px;
-  border:3px solid #bbf7d0;
+
+/* ===== SPINNER INLINE (kaya punya asuransi) ===== */
+.loading-wrapper{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  justify-content:center;
+  padding:40px 0;
+  color:#9ab0a4;
+}
+.spinner-small{
+  width:20px;
+  height:20px;
+  border:3px solid #e8f0ec;
   border-top:3px solid var(--green);
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-sm{
+  display:inline-block;
+  width:18px;
+  height:18px;
+  border:3px solid rgba(255,255,255,0.3);
+  border-top:3px solid #fff;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  vertical-align:middle;
+  margin-right:6px;
+}
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
 
-footer{text-align:center;font-size:13px;color:#166534;margin-top:40px}
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#1a2e24;
+  color:#fff;
+  padding:12px 28px;
+  border-radius:50px;
+  font-weight:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  display:none;
+  z-index:9999;
+  font-size:14px;
+}
+.toast.show{display:block;animation:slideUpToast .4s ease;}
+.toast.error{background:#d9534f;}
 
-@media(max-width:900px){
-  .layout{flex-direction:column}
-  .sidebar{width:100%}
+@keyframes slideUpToast{
+  from{opacity:0;transform:translate(-50%,20px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media(max-width:768px){
+  .sidebar-toggle{
+    display:block;
+  }
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    transform:translateX(-100%);
+    height:100vh;
+    width:280px;
+    z-index:10;
+    box-shadow:4px 0 40px rgba(0,0,0,.15);
+  }
+  .sidebar.open{
+    transform:translateX(0);
+  }
+  .sidebar-overlay.show{
+    display:block;
+  }
+  .content{
+    padding:18px 16px;
+    padding-top:70px;
+  }
+  .page-header{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+  .page-header h1{
+    font-size:20px;
+  }
+  .page-header h1 small{
+    font-size:12px;
+  }
+  .user-admin{
+    justify-content:center;
+    padding:6px 14px;
+  }
+  .user-admin .user-name{
+    font-size:13px;
+  }
+  .card{
+    padding:18px 16px;
+  }
+  .card h3{
+    font-size:16px;
+  }
+  .filter-group{
+    grid-template-columns:1fr;
+  }
+  table{
+    font-size:12px;
+    min-width:500px;
+  }
+  th,td{
+    padding:4px 6px;
+  }
+  td input{
+    width:40px;
+    padding:3px;
+    font-size:11px;
+  }
+  .summary-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:480px){
+  .user-admin .user-name{
+    display:none;
+  }
+  .summary-grid{
+    grid-template-columns:1fr;
+  }
+  table{
+    font-size:11px;
+    min-width:400px;
+  }
+  th,td{
+    padding:3px 4px;
+  }
+  td input{
+    width:35px;
+    padding:2px;
+    font-size:10px;
+  }
+}
+
+@media(min-width:769px){
+  .sidebar-toggle{
+    display:none !important;
+  }
+  .sidebar-overlay{
+    display:none !important;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="loading" id="loading"><div class="spinner"></div></div>
+<!-- ===== TOGGLE SIDEBAR MOBILE ===== -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <div class="layout">
 
-<aside class="sidebar">
-    <div class="brand">
-      <i class="fas fa-notes-medical"></i>
-      <h2>ADMIN MR</h2>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="logopanjang.png" alt="Medical Record">
     </div>
-    <nav class="menu">
+
+    <nav class="sidebar-menu">
       <a href="admin_index.html"><i class="fas fa-gauge-high"></i> Dashboard</a>
       <a href="admin_regulasi.html"><i class="fas fa-file-medical"></i> Regulasi</a>
-      <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan Pasien</a>
-      <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
-      <a href="admin_rekapitulasi_scan.html"><i class="fas fa-trash"></i> Rekapitulasi Scan</a>
+      <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan</a>
+      <a href="admin_jadwal.html"><i class="fas fa-calendar-check"></i> Jadwal</a>
+      
+      <!-- ===== IMUT DROPDOWN ===== -->
       <a href="javascript:void(0)" class="menu-toggle" onclick="toggleImut()">
         <i class="fas fa-chart-line"></i>
         <span>IMUT</span>
         <i class="fas fa-chevron-down arrow" id="imutArrow"></i>
       </a>
-
-      <div class="submenu" id="imutSubmenu">
-        <a href="admin_imutrekammedis.html">
-            <i class="fas fa-file-medical"></i>Rekam Medis
+      <div class="submenu show" id="imutSubmenu">
+        <a class="active" href="admin_imutrekammedis.html">
+          <i class="fas fa-file-medical"></i> Rekam Medis
         </a>
         <a href="admin_imutpendaftaran.html">
-            <i class="fas fa-user-plus"></i>Pendaftaran
+          <i class="fas fa-user-plus"></i> Pendaftaran
         </a>
         <a href="admin_imutcustomercare.html">
-            <i class="fas fa-headset"></i>Customer Care
+          <i class="fas fa-headset"></i> Customer Care
         </a>
-    </div>
+      </div>
 
-      <a href="admin_indikatorbor.html"><i class="fas fa-chart-simple"></i> Indikator</a>
-      <a href="admin_daftarasuransi.html"><i class="fas fa-shield-alt"></i> Daftar Asuransi</a>
+      <a href="admin_indikatorbor.html"><i class="fas fa-chart-line"></i> Indikator</a>
+      <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
+      <a href="admin_daftarasuransi.html"><i class="fas fa-shield-alt"></i> Asuransi</a>
     </nav>
   </aside>
 
-<main class="content" id="content">
+  <!-- ===== CONTENT ===== -->
+  <main class="content">
 
-<div class="header">
-  <h1>Indikator Mutu (IMUT) - REKAM MEDIS</h1>
-  <button class="logout" onclick="logout()">Logout</button>
+    <!-- HEADER -->
+    <div class="page-header">
+      <div>
+        <h1>IMUT <span>Rekam Medis</span></h1>
+      </div>
+      
+      <div class="user-admin">
+        <div class="avatar" id="avatarLetter">A</div>
+        <span class="user-name" id="userNameDisplay">Admin</span>
+        <button class="logout-btn" onclick="logout()" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD FILTER -->
+    <div class="card">
+      <h3><i class="fas fa-filter"></i> Filter IMUT</h3>
+      <div class="filter-group">
+        <div>
+          <label>Jenis Indikator</label>
+          <select id="indikator">
+            <option value="resume">IMUT Resume Medis</option>
+            <option value="dobel">IMUT Penomoran Dobel</option>
+            <option value="ic">IMUT Informed Consent</option>
+          </select>
+        </div>
+        <div>
+          <label>Bulan</label>
+          <select id="bulan"></select>
+        </div>
+        <div>
+          <label>Tahun</label>
+          <select id="tahun"></select>
+        </div>
+      </div>
+      <button class="btn-primary" id="tampilkanBtn" onclick="loadData()">
+        <i class="fas fa-search"></i> Tampilkan
+      </button>
+    </div>
+
+    <!-- CARD INPUT -->
+    <div class="card">
+      <h3><i class="fas fa-pen-to-square"></i> Input Harian</h3>
+      <div class="table-wrapper" id="tableWrapper">
+        <div class="loading-wrapper">
+          <div class="spinner-small"></div>
+          <span>Memuat data IMUT...</span>
+        </div>
+      </div>
+      <br>
+      <button class="btn-primary" id="simpanBtn" onclick="simpan()">
+        <i class="fas fa-save"></i> Simpan Data
+      </button>
+    </div>
+
+    <!-- CARD SUMMARY -->
+    <div class="card">
+      <h3><i class="fas fa-chart-pie"></i> Ringkasan</h3>
+      <div class="summary-grid">
+        <div class="summary-box">
+          <p>Total Numerator</p>
+          <h2 id="totalNum">0</h2>
+        </div>
+        <div class="summary-box">
+          <p>Total Denominator</p>
+          <h2 id="totalDen">0</h2>
+        </div>
+        <div class="summary-box">
+          <p>Persentase</p>
+          <h2 id="persen">0<span class="percent">%</span></h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD GRAFIK -->
+    <div class="card">
+      <h3><i class="fas fa-chart-bar"></i> Grafik Harian</h3>
+      <div style="height:380px;">
+        <canvas id="chart"></canvas>
+      </div>
+    </div>
+
+    <footer>© 2025 RSU An'Nimah • Unit Rekam Medis</footer>
+  </main>
 </div>
 
-<div class="card-text">
-<h3>Filter IMUT</h3>
-
-<label>Jenis Indikator</label>
-<select id="indikator">
-  <option value="resume">IMUT Resume Medis</option>
-  <option value="dobel">IMUT Penomoran Dobel</option>
-  <option value="ic">IMUT Informed Consent</option>
-</select>
-
-<label>Bulan</label>
-<select id="bulan"></select>
-
-<label>Tahun</label>
-<select id="tahun"></select>
-
-<button class="primary" onclick="loadData()">Tampilkan</button>
-</div>
-
-<div class="card-text">
-<h3>Input Harian</h3>
-<div class="table-wrapper">
-<table>
-<thead><tr id="tglHeader"></tr></thead>
-<tbody>
-<tr id="numRow"></tr>
-<tr id="denRow"></tr>
-</tbody>
-</table>
-</div><br>
-<button class="primary" onclick="simpan()">💾 Simpan Data</button>
-</div>
-
-<div class="card-text">
-<h3>Ringkasan</h3>
-<div class="summary">
-  <div class="box"><p>Total Numerator</p><h2 id="totalNum">0</h2></div>
-  <div class="box"><p>Total Denominator</p><h2 id="totalDen">0</h2></div>
-  <div class="box"><p>Persentase</p><h2 id="persen">0%</h2></div>
-</div>
-</div>
-
-<div class="card-text">
-<h3>Grafik Harian</h3>
-<div style="height:420px"><canvas id="chart"></canvas></div>
-</div>
-
-<footer>© 2025 Admin Medical Record RSU An Ni'mah</footer>
-
-</main>
-</div>
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toastMsg"></div>
 
 <script>
-/* AUTH */
-if(sessionStorage.getItem("adminLogin")!=="true") location.href="admin_index.html";
+// ========== CEK LOGIN ==========
+if (!sessionStorage.getItem('adminName')) {
+  window.location.href = 'index.html';
+}
 
-/* KONFIG */
-const API="https://script.google.com/macros/s/AKfycbw2bWf6egIBJjdiFCnTEaF1TEzOYYpbnV-RZmZuOdrbWw1BfJ8S_QnccarcM0BYlGIALw/exec";
-const bulanArr=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+// ========== GET ADMIN USERNAME ==========
+function getAdminName() {
+  return sessionStorage.getItem('adminName') || 'Admin';
+}
 
-const indikator=document.getElementById("indikator");
-const bulanSel=document.getElementById("bulan");
-const tahunSel=document.getElementById("tahun");
-const loading=document.getElementById("loading");
-const cards=document.querySelectorAll(".card");
-const content=document.getElementById("content");
+// ========== TOAST ==========
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toastMsg');
+  toast.textContent = msg;
+  toast.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========== LOGOUT ==========
+function logout() {
+  if (confirm('Yakin ingin logout?')) {
+    sessionStorage.removeItem('adminName');
+    sessionStorage.removeItem('toastShown');
+    showToast('👋 Logout berhasil!');
+    setTimeout(() => window.location.href = 'index.html', 600);
+  }
+}
+
+// ========== SIDEBAR TOGGLE MOBILE ==========
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+
+// ========== TOGGLE IMUT DROPDOWN ==========
+function toggleImut() {
+  const sub = document.getElementById('imutSubmenu');
+  const arrow = document.getElementById('imutArrow');
+  sub.classList.toggle('show');
+  arrow.classList.toggle('rotate');
+}
+
+// ========== IMUT REKAM MEDIS ==========
+const API = "https://script.google.com/macros/s/AKfycbw2bWf6egIBJjdiFCnTEaF1TEzOYYpbnV-RZmZuOdrbWw1BfJ8S_QnccarcM0BYlGIALw/exec";
+const bulanArr = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+
+const indikator = document.getElementById("indikator");
+const bulanSel = document.getElementById("bulan");
+const tahunSel = document.getElementById("tahun");
 const chartEl = document.getElementById("chart");
 
 let chart;
 
-/* INIT */
-bulanArr.forEach((b,i)=>bulanSel.innerHTML+=`<option value="${i+1}">${b}</option>`);
-const now=new Date().getFullYear();
-for(let y=2020;y<=now+1;y++) tahunSel.innerHTML+=`<option ${y===now?"selected":""}>${y}</option>`;
+// ========== INIT BULAN & TAHUN ==========
+bulanArr.forEach((b, i) => {
+  bulanSel.innerHTML += `<option value="${i+1}">${b}</option>`;
+});
+// Set bulan default ke bulan sekarang
+const nowMonth = new Date().getMonth();
+bulanSel.value = nowMonth + 1;
 
-/* UI */
-const show=v=>loading.classList.toggle("show",v);
-
-/* BUILD TANGGAL */
-function buildTanggal(){
-  const days=new Date(tahunSel.value,bulanSel.value,0).getDate();
-  let th="<th>Jenis</th>", num="<td>Numerator</td>", den="<td>Denominator</td>";
-
-  for(let i=1;i<=days;i++){
-    th+=`<th>${i}</th>`;
-    num+=`<td><input data-t="${i}" data-f="num"></td>`;
-    den+=`<td><input data-t="${i}" data-f="den"></td>`;
-  }
-  tglHeader.innerHTML=th;
-  numRow.innerHTML=num;
-  denRow.innerHTML=den;
+const nowYear = new Date().getFullYear();
+for (let y = 2020; y <= nowYear + 1; y++) {
+  tahunSel.innerHTML += `<option ${y === nowYear ? "selected" : ""}>${y}</option>`;
 }
 
-/* LOAD DATA */
-function loadData(){
-  show(true);
-  document.querySelectorAll("[data-t]").forEach(i=>i.value="");
+// ========== BUILD TANGGAL ==========
+function buildTanggal() {
+  const days = new Date(tahunSel.value, bulanSel.value, 0).getDate();
+  let th = "<th>Jenis</th>", num = "<td>Numerator</td>", den = "<td>Denominator</td>";
+
+  for (let i = 1; i <= days; i++) {
+    th += `<th>${i}</th>`;
+    num += `<td><input data-t="${i}" data-f="num" oninput="hitungTotal()"></td>`;
+    den += `<td><input data-t="${i}" data-f="den" oninput="hitungTotal()"></td>`;
+  }
+  return { th, num, den };
+}
+
+// ========== HITUNG TOTAL ==========
+function hitungTotal() {
+  let tn = 0, td = 0;
+  document.querySelectorAll('[data-f="num"]').forEach(i => {
+    tn += Number(i.value) || 0;
+  });
+  document.querySelectorAll('[data-f="den"]').forEach(i => {
+    td += Number(i.value) || 0;
+  });
+  document.getElementById('totalNum').textContent = tn;
+  document.getElementById('totalDen').textContent = td;
+  document.getElementById('persen').innerHTML = td ? ((tn/td)*100).toFixed(2) + '<span class="percent">%</span>' : '0<span class="percent">%</span>';
+}
+
+// ========== LOAD DATA ==========
+function loadData() {
+  const wrapper = document.getElementById('tableWrapper');
+  wrapper.innerHTML = `
+    <div class="loading-wrapper">
+      <div class="spinner-small"></div>
+      <span>Memuat data IMUT...</span>
+    </div>
+  `;
+
+  const btnTampilkan = document.getElementById('tampilkanBtn');
+  btnTampilkan.disabled = true;
+  btnTampilkan.innerHTML = '<span class="spinner-sm"></span> Memuat...';
 
   fetch(`${API}?indikator=${indikator.value}&bulan=${bulanSel.value}&tahun=${tahunSel.value}&mode=harian`)
-  .then(r=>r.json())
-  .then(d=>{
-    let labels=[], nums=[], dens=[], tn=0, td=0;
+    .then(r => r.json())
+    .then(d => {
+      let labels = [], nums = [], dens = [], tn = 0, td = 0;
 
-    d.data.forEach(x=>{
-      document.querySelector(`[data-t="${x.key}"][data-f="num"]`).value=x.num;
-      document.querySelector(`[data-t="${x.key}"][data-f="den"]`).value=x.den;
-      labels.push(x.key); nums.push(x.num); dens.push(x.den);
-      tn+=x.num; td+=x.den;
+      // Build table
+      const { th, num, den } = buildTanggal();
+      let tableHtml = `<table>
+        <thead><tr>${th}</tr></thead>
+        <tbody>
+          <tr>${num}</tr>
+          <tr>${den}</tr>
+        </tbody>
+      </table>`;
+      wrapper.innerHTML = tableHtml;
+
+      // Isi data
+      d.data.forEach(x => {
+        const numInput = document.querySelector(`[data-t="${x.key}"][data-f="num"]`);
+        const denInput = document.querySelector(`[data-t="${x.key}"][data-f="den"]`);
+        if (numInput) numInput.value = x.num;
+        if (denInput) denInput.value = x.den;
+        labels.push(x.key);
+        nums.push(x.num);
+        dens.push(x.den);
+        tn += x.num;
+        td += x.den;
+      });
+
+      document.getElementById('totalNum').textContent = tn;
+      document.getElementById('totalDen').textContent = td;
+      document.getElementById('persen').innerHTML = td ? ((tn/td)*100).toFixed(2) + '<span class="percent">%</span>' : '0<span class="percent">%</span>';
+
+      // ========== CHART ==========
+      if (chart) chart.destroy();
+      chart = new Chart(chartEl, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Numerator',
+              data: nums,
+              backgroundColor: 'rgba(47,163,107,0.6)',
+              borderColor: '#2fa36b',
+              borderWidth: 1
+            },
+            {
+              label: 'Denominator',
+              data: dens,
+              backgroundColor: 'rgba(59,130,246,0.6)',
+              borderColor: '#3b82f6',
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+
+      btnTampilkan.disabled = false;
+      btnTampilkan.innerHTML = '<i class="fas fa-search"></i> Tampilkan';
+    })
+    .catch(() => {
+      showToast('❌ Gagal memuat data!', true);
+      wrapper.innerHTML = `
+        <div style="text-align:center;padding:40px 0;color:#ef4444;">
+          <i class="fas fa-exclamation-triangle" style="font-size:40px;display:block;margin-bottom:10px;"></i>
+          <p>Gagal memuat data</p>
+        </div>
+      `;
+      btnTampilkan.disabled = false;
+      btnTampilkan.innerHTML = '<i class="fas fa-search"></i> Tampilkan';
     });
+}
 
-    totalNum.innerText=tn;
-    totalDen.innerText=td;
-    persen.innerText=td?((tn/td)*100).toFixed(2)+"%":"0%";
-
-    if(chart) chart.destroy();
-    chart=new Chart(chartEl,{
-      type:"bar",
-      data:{labels,datasets:[
-        {label:"Numerator",data:nums},
-        {label:"Denominator",data:dens}
-      ]},
-      options:{responsive:true,maintainAspectRatio:false}
+// ========== SIMPAN ==========
+function simpan() {
+  const btn = document.getElementById('simpanBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-sm"></span> Menyimpan...';
+  
+  let saved = 0;
+  let promises = [];
+  
+  for (const inp of document.querySelectorAll('[data-f="num"]')) {
+    const t = inp.dataset.t;
+    const num = inp.value;
+    const denInput = document.querySelector(`[data-t="${t}"][data-f="den"]`);
+    const den = denInput ? denInput.value : 0;
+    
+    if (num === "" && den === "") continue;
+    
+    promises.push(
+      fetch(API, {
+        method: "POST",
+        body: JSON.stringify({
+          indikator: indikator.value,
+          tahun: tahunSel.value,
+          bulan: bulanSel.value,
+          tgl: Number(t),
+          num: Number(num) || 0,
+          den: Number(den) || 0
+        })
+      })
+    );
+    saved++;
+  }
+  
+  Promise.all(promises)
+    .then(() => {
+      loadData();
+      showToast(`✅ Data berhasil disimpan! (${saved} item)`);
+      btn.innerHTML = '<i class="fas fa-save"></i> Simpan Data';
+      btn.disabled = false;
+    })
+    .catch(() => {
+      showToast('❌ Gagal menyimpan data!', true);
+      btn.innerHTML = '<i class="fas fa-save"></i> Simpan Data';
+      btn.disabled = false;
     });
-  })
-  .finally(()=>{
-    show(false);
-    content.classList.add("show");
-    cards.forEach((c,i)=>setTimeout(()=>c.classList.add("show"),i*120));
-  });
 }
 
-/* SIMPAN */
-async function simpan(){
-  show(true);
-  for(const inp of document.querySelectorAll('[data-f="num"]')){
-    const t=inp.dataset.t;
-    const num=inp.value;
-    const den=document.querySelector(`[data-t="${t}"][data-f="den"]`).value;
-    if(num==="" && den==="") continue;
-    await fetch(API,{method:"POST",body:JSON.stringify({
-      indikator:indikator.value,tahun:tahunSel.value,bulan:bulanSel.value,
-      tgl:Number(t),num:Number(num)||0,den:Number(den)||0
-    })});
+// ========== EVENT ==========
+indikator.onchange = loadData;
+bulanSel.onchange = loadData;
+tahunSel.onchange = loadData;
+
+// ========== ONLOAD ==========
+document.addEventListener("DOMContentLoaded", function() {
+  const name = getAdminName();
+  document.getElementById('userNameDisplay').textContent = name;
+  document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
+  
+  setTimeout(() => loadData(), 300);
+  
+  const toastShown = sessionStorage.getItem('toastShown');
+  if (!toastShown) {
+    setTimeout(() => showToast(`👋 Selamat datang, ${name}!`), 400);
+    sessionStorage.setItem('toastShown', 'true');
   }
-  await loadData();
-  show(false);
-  alert("✅ Data IMUT berhasil disimpan");
-}
+});
 
-function toggleImut(){
-  const sub = document.getElementById("imutSubmenu");
-  const arrow = document.getElementById("imutArrow");
+// ========== SHORTCUT ==========
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') logout();
+});
 
-  sub.classList.toggle("show");
-  arrow.classList.toggle("rotate");
-}
-
-/* EVENT */
-indikator.onchange=loadData;
-bulanSel.onchange=()=>{buildTanggal();loadData();}
-tahunSel.onchange=()=>{buildTanggal();loadData();}
-window.onload=()=>{buildTanggal();loadData();}
-
-/* LOGOUT */
-function logout(){
-  if(confirm("Logout?")){
-    sessionStorage.removeItem("adminLogin");
-    location.href="admin_index.html";
+// ========== CLOSE SIDEBAR SAAT RESIZE ==========
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    closeSidebar();
   }
-}
+});
 </script>
 
 </body>
