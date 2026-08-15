@@ -1,393 +1,667 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Admin Dashboard | Medical Record</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="icon" href="logorekammedis.ico">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>Admin Dashboard | Medical Record</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 :root{
-  --green:#329951;
-  --green-dark:#329951;
-  --green-soft:#ffffff;
-  --bg:#ffffff;
-  --text:#329951;
-  --line:#e5e7eb;
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --bg:#f0f7f3;
+  --card:#ffffff;
+  --shadow:0 4px 20px rgba(0,0,0,.06);
+  --sidebar-width:240px;
 }
 
-*{box-sizing:border-box;font-family:"Segoe UI",sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+
 body{
-  margin:0;
   background:var(--bg);
+  min-height:100vh;
 }
 
-/* ===== LOGIN ===== */
-.login-wrapper{
+/* ===== LAYOUT ===== */
+.layout{
+  display:flex;
+  min-height:100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:var(--sidebar-width);
+  background:#ffffff;
+  padding:0;
+  flex-shrink:0;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  box-shadow:4px 0 30px rgba(0,0,0,.04);
+  z-index:10;
+  border-right:1px solid #e8f0ec;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s ease;
+}
+
+.sidebar-brand{
+  padding:20px;
+  border-bottom:1px solid #eef5f2;
   display:flex;
   align-items:center;
   justify-content:center;
-  min-height:100vh;
 }
-.login-box{
-  background:#fff;
-  padding:35px;
-  width:100%;
-  max-width:380px;
-  border-radius:20px;
-  box-shadow:0 15px 40px rgba(0,0,0,.12);
-  animation:fadeUp .6s ease;
+.sidebar-brand img{
+  height:50px;
+  width:auto;
 }
-.login-box h2{
+
+.sidebar-menu{
+  padding:16px 12px;
+  flex:1;
+}
+.sidebar-menu a{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:10px 16px;
+  color:#5a6b62;
+  text-decoration:none;
+  border-radius:10px;
+  transition:all .2s;
+  font-weight:500;
+  font-size:14px;
+  margin-bottom:2px;
+}
+.sidebar-menu a i{
+  width:20px;
   text-align:center;
-  margin-bottom:10px;
+  font-size:15px;
+  color:#9ab0a4;
+  transition:.2s;
+}
+.sidebar-menu a:hover{
+  background:#f0f7f3;
   color:var(--green-dark);
 }
-.login-box p{
-  text-align:center;
-  font-size:14px;
-  color:#555;
-  margin-bottom:25px;
+.sidebar-menu a:hover i{
+  color:var(--green);
 }
-.login-box input{
-  width:100%;
-  padding:12px 14px;
-  margin-bottom:14px;
-  border-radius:12px;
-  border:1px solid #ddd;
-  font-size:14px;
-}
-.login-box button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:999px;
-  background:linear-gradient(135deg,#16a34a,#22c55e);
+.sidebar-menu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
   color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-  transition:.3s;
+  box-shadow:0 4px 16px rgba(47,163,107,.25);
 }
-.login-box button:hover{
-  transform:translateY(-2px);
-}
-.error{
-  color:#dc2626;
-  font-size:13px;
-  text-align:center;
-  margin-top:10px;
-  display:none;
+.sidebar-menu a.active i{
+  color:#fff;
 }
 
 /* ===== SUB MENU IMUT ===== */
 .menu-toggle{
   justify-content:space-between;
+  cursor:pointer;
 }
-
-.arrow{
+.menu-toggle .arrow{
   margin-left:auto;
-  transition:.3s;
+  transition:.4s;
+  font-size:12px;
 }
-
 .submenu{
   max-height:0;
   overflow:hidden;
-  margin-left:25px;
-  transition:max-height .35s ease;
+  margin-left:20px;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1);
 }
-
 .submenu a{
-  font-size:14px;
-  padding:10px 18px;
-  margin-bottom:8px;
-  background:rgba(255,255,255,.12);
-  border-radius:12px;
+  font-size:13px;
+  padding:8px 16px;
+  margin-bottom:2px;
+  background:rgba(47,163,107,.06);
+  border-radius:8px;
+  color:#5a6b62;
 }
-
+.submenu a i{
+  font-size:13px;
+  width:18px;
+}
+.submenu a:hover{
+  background:rgba(47,163,107,.12);
+  color:var(--green-dark);
+}
+.submenu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+}
+.submenu a.active i{
+  color:#fff;
+}
 .submenu.show{
-  max-height:350px;
+  max-height:400px;
 }
-
 .submenu.show ~ .menu-toggle .arrow{
   transform:rotate(180deg);
 }
 
-/* ===== DASHBOARD ===== */
-.layout{display:none;min-height:100vh
-}
-
-.sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#16a34a,#15803d);
+/* ===== TOGGLE SIDEBAR MOBILE ===== */
+.sidebar-toggle{
+  display:none;
+  position:fixed;
+  top:12px;
+  left:12px;
+  z-index:20;
+  background:var(--green);
   color:#fff;
-  padding:25px 20px;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(47,163,107,.3);
 }
-.brand{text-align:center;margin-bottom:40px}
-.brand i{font-size:42px;margin-bottom:10px}
-.brand h2{margin:0;font-size:20px;font-weight:600}
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.4);
+  z-index:9;
+}
 
-.menu a{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 18px;margin-bottom:14px;
-  color:#ffffff;text-decoration:none;
-  border-radius:14px;
-  transition:.3s;
-}
-.menu a:hover,.menu a.active{
-  background:rgba(255,255,255,.2);
-  transform:translateX(6px);
-}
-
+/* ===== CONTENT ===== */
 .content{
   flex:1;
-  padding:35px;
-  color:#444;
+  padding:30px 35px;
+  min-width:0;
 }
-.header{
+
+/* HEADER */
+.page-header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:30px;transition:.3s;
+  margin-bottom:30px;
+  flex-wrap:wrap;
+  gap:12px;
 }
-.user{
-  display:flex;
-  gap:10px;
-  align-items:center;
+.page-header h1{
+  font-size:24px;
+  font-weight:700;
+  color:#1a2e24;
 }
-.logout{
-  background:#ef4444;
-  color:#fff;
-  border:none;
-  padding:10px 16px;
-  border-radius:999px;
-  cursor:pointer;
-  font-size:13px;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  transition:.3s;
-}
-.logout:hover{
-  background:#dc2626;
-  transform:translateY(-2px);
+.page-header h1 span{
+  color:var(--green);
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:24px;
-}
-.box{
+/* USER ADMIN - POJOK KANAN */
+.user-admin{
+  display:flex;
+  align-items:center;
+  gap:12px;
   background:#fff;
-  border-radius:22px;
-  padding:30px;
-  text-align:center;
-  box-shadow:0 12px 28px rgba(0,0,0,.08);
-  transition:.35s;
+  padding:6px 18px 6px 12px;
+  border-radius:50px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
+}
+.user-admin .avatar{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:14px;
+  color:#fff;
+}
+.user-admin .user-name{
+  font-size:14px;
+  font-weight:600;
+  color:#2d3e35;
+}
+.user-admin .logout-btn{
+  background:transparent;
+  border:none;
+  color:#bccfc4;
+  cursor:pointer;
+  font-size:16px;
+  padding:4px 6px;
+  border-radius:50%;
+  transition:.2s;
+}
+.user-admin .logout-btn:hover{
+  color:#d9534f;
+  background:#fde8e8;
+}
+
+/* WELCOME */
+.welcome-box{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  border-radius:14px;
+  padding:22px 28px;
+  color:#fff;
+  margin-bottom:30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+  box-shadow:0 8px 30px rgba(47,163,107,.2);
+}
+.welcome-box h2{
+  font-size:20px;
+  font-weight:700;
+}
+.welcome-box h2 span{
+  color:#fff;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+.welcome-box p{
+  opacity:.85;
+  font-size:14px;
+  margin-top:2px;
+}
+.welcome-box .date{
+  background:rgba(255,255,255,.15);
+  padding:6px 18px;
+  border-radius:50px;
+  font-size:13px;
+}
+
+/* MENU CARD */
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:16px;
+}
+.menu-card{
+  background:#fff;
+  border-radius:12px;
+  padding:22px 18px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
+  transition:all .25s;
   text-decoration:none;
-  color:#3a3a3a;
+  color:#2d3e35;
+  display:block;
+  text-align:center;
 }
-.box:hover{
-  transform:translateY(-6px);
+.menu-card:hover{
+  transform:translateY(-5px);
+  border-color:var(--green);
+  box-shadow:0 12px 40px rgba(47,163,107,.1);
 }
-.box i{
-  font-size:42px;
-  color:#16a34a;
-  margin-bottom:16px;
+.menu-card .card-icon{
+  width:50px;
+  height:50px;
+  border-radius:12px;
+  background:#f0f7f3;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 12px;
+  font-size:22px;
+  color:var(--green);
+  transition:.2s;
+}
+.menu-card:hover .card-icon{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+}
+.menu-card h3{
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:2px;
+}
+.menu-card p{
+  font-size:12px;
+  color:#9ab0a4;
+  margin:0;
 }
 
 footer{
   text-align:center;
   font-size:13px;
-  color:#065f46;
-  margin-top:40px;
+  color:#bccfc4;
+  margin-top:35px;
+  padding-top:16px;
+  border-top:1px solid #e8f0ec;
 }
 
-/* ===== DASHBOARD FADE UP ===== */
-.fade-up{
-  animation: fadeUp .6s ease forwards;
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#1a2e24;
+  color:#fff;
+  padding:12px 28px;
+  border-radius:50px;
+  font-weight:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  display:none;
+  z-index:9999;
+  font-size:14px;
+}
+.toast.show{display:block;animation:slideUpToast .4s ease;}
+.toast.error{background:#d9534f;}
+
+@keyframes slideUpToast{
+  from{opacity:0;transform:translate(-50%,20px)}
+  to{opacity:1;transform:translate(-50%,0)}
 }
 
-/* ===== ANIMATION ===== */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:none}
+/* ===== RESPONSIVE MOBILE ===== */
+@media(max-width:768px){
+  .sidebar-toggle{
+    display:block;
+  }
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    transform:translateX(-100%);
+    height:100vh;
+    width:280px;
+    z-index:10;
+    box-shadow:4px 0 40px rgba(0,0,0,.15);
+  }
+  .sidebar.open{
+    transform:translateX(0);
+  }
+  .sidebar-overlay.show{
+    display:block;
+  }
+  .content{
+    padding:18px 16px;
+    padding-top:70px;
+  }
+  .page-header{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+  .page-header h1{
+    font-size:20px;
+  }
+  .user-admin{
+    justify-content:center;
+    padding:6px 14px;
+  }
+  .user-admin .user-name{
+    font-size:13px;
+  }
+  .welcome-box{
+    padding:16px 20px;
+    flex-direction:column;
+    text-align:center;
+  }
+  .welcome-box h2{
+    font-size:17px;
+  }
+  .welcome-box .date{
+    font-size:12px;
+  }
+  .menu-grid{
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .menu-card{
+    padding:18px 14px;
+  }
+  .menu-card .card-icon{
+    width:44px;
+    height:44px;
+    font-size:18px;
+  }
+  .menu-card h3{
+    font-size:14px;
+  }
 }
 
-@media(max-width:900px){
-  .layout{flex-direction:column}
-  .sidebar{width:100%}
+@media(max-width:480px){
+  .menu-grid{
+    grid-template-columns:1fr;
+  }
+  .user-admin .user-name{
+    display:none;
+  }
+  .welcome-box h2{
+    font-size:16px;
+  }
+}
+
+@media(min-width:769px){
+  .sidebar-toggle{
+    display:none !important;
+  }
+  .sidebar-overlay{
+    display:none !important;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div class="login-wrapper" id="loginPage">
-  <div class="login-box">
-    <h2><i class="fas fa-user-shield"></i> Admin Login</h2>
-    <p>Medical Record RSU An Ni'mah</p>
+<!-- ===== TOGGLE SIDEBAR MOBILE ===== -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
+<div class="layout">
 
-    <button onclick="login()">Masuk Dashboard</button>
-    <div class="error" id="error">Username atau password salah</div>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="layout" id="dashboard">
-  <aside class="sidebar">
-    <div class="brand">
-      <i class="fas fa-notes-medical"></i>
-      <h2>ADMIN MR</h2>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="logopanjang.png" alt="Medical Record">
     </div>
-    <nav class="menu">
+
+    <nav class="sidebar-menu">
       <a class="active"><i class="fas fa-gauge-high"></i> Dashboard</a>
       <a href="admin_regulasi.html"><i class="fas fa-file-medical"></i> Regulasi</a>
-      <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan Pasien</a>
-      <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
-      <a href="admin_rekapitulasi_scan.html"><i class="fas fa-trash"></i> Rekapitulasi Scan</a>
+      <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan</a>
+      <a href="admin_jadwal.html"><i class="fas fa-calendar-check"></i> Jadwal</a>
+      
+      <!-- ===== IMUT DROPDOWN ===== -->
       <a href="javascript:void(0)" class="menu-toggle" onclick="toggleImut()">
         <i class="fas fa-chart-line"></i>
         <span>IMUT</span>
         <i class="fas fa-chevron-down arrow" id="imutArrow"></i>
       </a>
-
       <div class="submenu" id="imutSubmenu">
         <a href="admin_imutrekammedis.html">
-            <i class="fas fa-file-medical"></i>Rekam Medis
+          <i class="fas fa-file-medical"></i> Rekam Medis
         </a>
         <a href="admin_imutpendaftaran.html">
-            <i class="fas fa-user-plus"></i>Pendaftaran
+          <i class="fas fa-user-plus"></i> Pendaftaran
         </a>
         <a href="admin_imutcustomercare.html">
-            <i class="fas fa-headset"></i>Customer Care
+          <i class="fas fa-headset"></i> Customer Care
         </a>
-    </div>
+      </div>
 
-      <a href="admin_indikatorbor.html"><i class="fas fa-chart-simple"></i> Indikator</a>
-      <a href="admin_daftarasuransi.html"><i class="fas fa-shield-alt"></i> Daftar Asuransi</a>
+      <a href="admin_indikatorbor.html"><i class="fas fa-chart-line"></i> Indikator</a>
+      <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
+      <a href="admin_daftarasuransi.html"><i class="fas fa-shield-alt"></i> Asuransi</a>
     </nav>
   </aside>
 
+  <!-- ===== CONTENT ===== -->
   <main class="content">
-    <div class="header">
-      <h1>Dashboard Admin</h1>
-      <div class="user">
-        <i class="fas fa-user-shield"></i> Admin
-        <button class="logout" onclick="logout()">Logout</button>
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <h1>Dashboard <span>Admin</span></h1>
+      
+      <div class="user-admin">
+        <div class="avatar" id="avatarLetter">A</div>
+        <span class="user-name" id="userNameDisplay">Admin</span>
+        <button class="logout-btn" onclick="logout()" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
       </div>
     </div>
 
-    <div class="grid">
-      <a href="admin_regulasi.html" class="box">
-        <i class="fas fa-file-medical"></i>
+    <!-- WELCOME -->
+    <div class="welcome-box">
+      <div>
+        <h2>👋 Selamat Datang, <span id="welcomeName">Admin</span></h2>
+        <p>Kelola data rekam medis dengan mudah dan efisien</p>
+      </div>
+      <div class="date">
+        <i class="fas fa-calendar-alt" style="margin-right:6px;"></i>
+        <span id="currentDate"></span>
+      </div>
+    </div>
+
+    <!-- MENU CARD -->
+    <div class="menu-grid">
+      <a href="admin_regulasi.html" class="menu-card">
+        <div class="card-icon"><i class="fas fa-file-medical"></i></div>
         <h3>Regulasi</h3>
-        <p>Kelola pedoman & SOP</p>
+        <p>Kelola SOP & pedoman</p>
       </a>
-      <a href="admin_kunjungan.html" class="box">
-        <i class="fas fa-chart-simple"></i>
-        <h3>Kunjungan Pasien</h3>
-        <p>Rawat Jalan, Rawat Inap & IGD</p>
+      <a href="admin_kunjungan.html" class="menu-card">
+        <div class="card-icon"><i class="fas fa-chart-simple"></i></div>
+        <h3>Kunjungan</h3>
+        <p>Rawat Jalan, Inap, IGD</p>
       </a>
-      <a href="admin_jadwal.html" class="box">
-        <i class="fas fa-calendar-check"></i>
+      <a href="admin_jadwal.html" class="menu-card">
+        <div class="card-icon"><i class="fas fa-calendar-check"></i></div>
         <h3>Jadwal</h3>
-        <p>Kelola jadwal</p>
+        <p>Kelola kegiatan</p>
       </a>
-      <a href="admin_indikatorbor.html" class="box">
-        <i class="fas fa-chart-simple"></i>
-        <h3>Indikator</h3>
-        <p>Data indikator</p>
-      </a>
-      <a href="admin_imut.html" class="box">
-        <i class="fas fa-chart-line"></i>
+      <a href="admin_imutrekammedis.html" class="menu-card">
+        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
         <h3>IMUT</h3>
-        <p>Rekam Medis, Pendaftaran & Customer Care</p>
+        <p>Rekam Medis, Pendaftaran, Customer Care</p>
+      </a>
+      <a href="admin_indikatorbor.html" class="menu-card">
+        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>Indikator</h3>
+        <p>IMUT, BOR, KPI</p>
+      </a>
+      <a href="admin_pemusnahan.html" class="menu-card">
+        <div class="card-icon"><i class="fas fa-trash"></i></div>
+        <h3>Pemusnahan</h3>
+        <p>Arsip & data</p>
+      </a>
+      <a href="admin_daftarasuransi.html" class="menu-card">
+        <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Asuransi</h3>
+        <p>Data asuransi</p>
       </a>
     </div>
 
-    <footer>© 2025 Admin Medical Record RSU An Ni'mah</footer>
+    <footer>© 2025 RSU An'Nimah • Unit Rekam Medis</footer>
   </main>
 </div>
 
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toastMsg"></div>
+
 <script>
-const USERS = [
-  { username: "admin",  password: "admin123" },
-  { username: "susi", password: "susi123" },
-  { username: "heyyog", password: "martil235" }
-];
+// ========== CEK LOGIN ==========
+if (!sessionStorage.getItem('adminName')) {
+  window.location.href = 'index.html';
+}
 
-function login(){
-  const u = document.getElementById("username").value;
-  const p = document.getElementById("password").value;
-  const err = document.getElementById("error");
+// ========== GET ADMIN USERNAME ==========
+function getAdminName() {
+  return sessionStorage.getItem('adminName') || 'Admin';
+}
 
-  const valid = USERS.find(user => user.username === u && user.password === p);
+// ========== FORMAT DATE ==========
+function formatDate() {
+  const now = new Date();
+  const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  return `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+}
 
-  if(valid){
-    sessionStorage.setItem("adminLogin","true");
-    sessionStorage.setItem("adminUser", u); // simpan siapa yang login
-    showDashboard();
-  }else{
-    err.style.display="block";
+// ========== TOAST ==========
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toastMsg');
+  toast.textContent = msg;
+  toast.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========== LOGOUT ==========
+function logout() {
+  if (confirm('Yakin ingin logout?')) {
+    sessionStorage.removeItem('adminName');
+    sessionStorage.removeItem('toastShown');
+    showToast('👋 Logout berhasil!');
+    setTimeout(() => window.location.href = 'index.html', 600);
   }
 }
 
-function logout(){
-  sessionStorage.removeItem("adminLogin");
-  sessionStorage.removeItem("adminUser");
-  location.reload();
+// ========== SIDEBAR TOGGLE MOBILE ==========
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
 }
 
-function showDashboard(){
-  const login = document.getElementById("loginPage");
-  const dash  = document.getElementById("dashboard");
-
-  login.style.display = "none";
-  dash.style.display  = "flex";
-
-  // reset animasi (biar bisa kepake juga pas reload)
-  dash.classList.remove("fade-up");
-  void dash.offsetWidth; // trigger reflow
-  dash.classList.add("fade-up");
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
 }
 
-if(sessionStorage.getItem("adminLogin")==="true"){
-  window.addEventListener("load", showDashboard);
+// ========== TOGGLE IMUT DROPDOWN ==========
+function toggleImut() {
+  const sub = document.getElementById('imutSubmenu');
+  const arrow = document.getElementById('imutArrow');
+  sub.classList.toggle('show');
+  arrow.classList.toggle('rotate');
 }
-document.addEventListener("DOMContentLoaded", () => {
-  const username = document.getElementById("username");
-  const password = document.getElementById("password");
 
-  username.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      password.focus();
-    }
-  });
-
-  password.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      login();
-    }
-  });
+// ========== INIT ==========
+document.addEventListener("DOMContentLoaded", function() {
+  const name = getAdminName();
+  
+  document.getElementById('userNameDisplay').textContent = name;
+  document.getElementById('welcomeName').textContent = name;
+  document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('currentDate').textContent = formatDate();
+  
+  // 🔥 TOAST HANYA MUNCUL SEKALI
+  const toastShown = sessionStorage.getItem('toastShown');
+  if (!toastShown) {
+    setTimeout(() => showToast(`👋 Selamat datang, ${name}!`), 300);
+    sessionStorage.setItem('toastShown', 'true');
+  }
 });
-function toggleImut(){
-  const sub = document.getElementById("imutSubmenu");
-  const arrow = document.getElementById("imutArrow");
 
-  sub.classList.toggle("show");
-  arrow.classList.toggle("rotate");
-}
+// ========== SHORTCUT ==========
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') logout();
+});
+
+// ========== CLOSE SIDEBAR SAAT RESIZE ==========
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    closeSidebar();
+  }
+});
 </script>
-
 
 </body>
 </html>
