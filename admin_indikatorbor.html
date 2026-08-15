@@ -1,570 +1,976 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Admin Indikator | Medical Record</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="icon" href="logorekammedis.ico">
+<title>Admin Indikator | Medical Record</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 :root{
-  --green:#329951;
-  --green-dark:#329951;
-  --green-soft:#ffffff;
-  --bg:#ffffff;
-  --text:#329951;
-  --line:#e5e7eb;
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --bg:#f0f7f3;
+  --card:#ffffff;
+  --shadow:0 4px 20px rgba(0,0,0,.06);
+  --sidebar-width:240px;
 }
-*{box-sizing:border-box;font-family:"Segoe UI",sans-serif}
-body{margin:0;background:var(--bg)}
-.layout{display:flex;min-height:100vh}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
+
+body{
+  background:var(--bg);
+  min-height:100vh;
+}
+
+/* ===== LAYOUT ===== */
+.layout{
+  display:flex;
+  min-height:100vh;
+}
 
 /* ===== SIDEBAR ===== */
 .sidebar{
-  width:260px;
-  background:linear-gradient(180deg,#16a34a,#15803d);
-  color:#fff;
-  padding:25px 20px;
-}
-.brand{text-align:center;margin-bottom:40px}
-.brand i{font-size:42px;margin-bottom:10px}
-.brand h2{margin:0;font-size:20px;font-weight:600}
-
-.menu a{
-  display:flex;align-items:center;gap:14px;
-  padding:14px 18px;margin-bottom:14px;
-  color:#ffffff;text-decoration:none;
-  border-radius:14px;
-  transition:.3s;
-}
-.menu a:hover,.menu a.active{
-  background:rgba(255,255,255,.18);
-  transform:translateX(6px);
+  width:var(--sidebar-width);
+  background:#ffffff;
+  padding:0;
+  flex-shrink:0;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  box-shadow:4px 0 30px rgba(0,0,0,.04);
+  z-index:10;
+  border-right:1px solid #e8f0ec;
+  display:flex;
+  flex-direction:column;
+  transition:transform .3s ease;
 }
 
-/* ===== CONTENT (ANIMASI AMAN) ===== */
-.content{
+.sidebar-brand{
+  padding:20px;
+  border-bottom:1px solid #eef5f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.sidebar-brand img{
+  height:50px;
+  width:auto;
+}
+
+.sidebar-menu{
+  padding:16px 12px;
   flex:1;
-  padding:35px;
-  opacity:0;
-  transform:translateY(18px);
-  transition:.6s ease;
 }
-.content.show{
-  opacity:1;
-  transform:none;
-}
-
-.header{
+.sidebar-menu a{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  margin-bottom:30px;
-}
-.header h1{margin:0;color:var(--text)}
-.user{
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-.logout{
-  background:#ef4444;
-  color:#fff;
-  border:none;
+  gap:14px;
   padding:10px 16px;
-  border-radius:999px;
-  cursor:pointer;
-  font-size:13px;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  transition:.3s;
+  color:#5a6b62;
+  text-decoration:none;
+  border-radius:10px;
+  transition:all .2s;
+  font-weight:500;
+  font-size:14px;
+  margin-bottom:2px;
 }
-.logout:hover{
-  background:#dc2626;
-  transform:translateY(-2px);
+.sidebar-menu a i{
+  width:20px;
+  text-align:center;
+  font-size:15px;
+  color:#9ab0a4;
+  transition:.2s;
+}
+.sidebar-menu a:hover{
+  background:#f0f7f3;
+  color:var(--green-dark);
+}
+.sidebar-menu a:hover i{
+  color:var(--green);
+}
+.sidebar-menu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  box-shadow:0 4px 16px rgba(47,163,107,.25);
+}
+.sidebar-menu a.active i{
+  color:#fff;
 }
 
 /* ===== SUB MENU IMUT ===== */
 .menu-toggle{
   justify-content:space-between;
+  cursor:pointer;
 }
-
-.arrow{
+.menu-toggle .arrow{
   margin-left:auto;
-  transition:.3s;
+  transition:.4s;
+  font-size:12px;
 }
-
 .submenu{
   max-height:0;
   overflow:hidden;
-  margin-left:25px;
-  transition:max-height .35s ease;
+  margin-left:20px;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1);
 }
-
 .submenu a{
-  font-size:14px;
-  padding:10px 18px;
-  margin-bottom:8px;
-  background:rgba(255,255,255,.12);
-  border-radius:12px;
+  font-size:13px;
+  padding:8px 16px;
+  margin-bottom:2px;
+  background:rgba(47,163,107,.06);
+  border-radius:8px;
+  color:#5a6b62;
 }
-
+.submenu a i{
+  font-size:13px;
+  width:18px;
+}
+.submenu a:hover{
+  background:rgba(47,163,107,.12);
+  color:var(--green-dark);
+}
+.submenu a.active{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+}
+.submenu a.active i{
+  color:#fff;
+}
 .submenu.show{
-  max-height:350px;
+  max-height:400px;
 }
-
 .submenu.show ~ .menu-toggle .arrow{
   transform:rotate(180deg);
 }
 
-/* ===== CARD (SEMBUL) ===== */
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:26px;
-  margin-bottom:25px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-
-  opacity:0;
-  transform:translateY(24px) scale(.98);
-  transition:.55s ease;
-}
-.card.show{
-  opacity:1;
-  transform:none;
-}
-.card h3{margin-top:0;color:var(--green-dark)}
-
-/* ===== FORM ===== */
-label{font-size:13px;color:#065f46}
-input,select{
-  width:100%;
-  padding:11px 12px;
-  border-radius:10px;
-  border:1px solid var(--line);
-  margin:6px 0 14px;
-}
-
-/* ===== TABLE ===== */
-table{width:100%;border-collapse:collapse}
-th,td{
-  border:1px solid var(--line);
-  padding:6px;
-  text-align:center;
-}
-th{background:var(--green);color:#fff}
-.good{background:#dcfce7}
-.warn{background:#fff7cd}
-.bad{background:#fee2e2}
-
-/* ===== BUTTON ===== */
-button.primary{
+/* ===== TOGGLE SIDEBAR MOBILE ===== */
+.sidebar-toggle{
+  display:none;
+  position:fixed;
+  top:12px;
+  left:12px;
+  z-index:20;
   background:var(--green);
   color:#fff;
   border:none;
-  padding:12px 20px;
-  border-radius:12px;
-  font-weight:600;
+  padding:10px 14px;
+  border-radius:10px;
+  font-size:18px;
   cursor:pointer;
+  box-shadow:0 4px 16px rgba(47,163,107,.3);
 }
-button.primary:hover{background:var(--green-dark)}
-button.secondary{
-  background:#2563eb;
-  color:#fff;
-  border:none;
-  padding:12px 20px;
-  border-radius:12px;
-  cursor:pointer;
-}
-
-/* ===== FOOTER ===== */
-footer{
-  text-align:center;
-  font-size:13px;
-  color:#065f46;
-  margin-top:40px;
-}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:900px){
-  .layout{flex-direction:column}
-  .sidebar{width:100%}
-}
-
-/* ===== LOADING (FIXED) ===== */
-.loading{
+.sidebar-overlay{
+  display:none;
   position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.25);
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.4);
+  z-index:9;
+}
+
+/* ===== CONTENT ===== */
+.content{
+  flex:1;
+  padding:30px 35px;
+  min-width:0;
+}
+
+/* HEADER */
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.page-header h1{
+  font-size:24px;
+  font-weight:700;
+  color:#1a2e24;
+}
+.page-header h1 span{
+  color:var(--green);
+}
+
+/* USER ADMIN - POJOK KANAN */
+.user-admin{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+  padding:6px 18px 6px 12px;
+  border-radius:50px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
+}
+.user-admin .avatar{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
   display:flex;
   align-items:center;
   justify-content:center;
-  z-index:9999;
-  opacity:0;
-  pointer-events:none;
+  font-weight:700;
+  font-size:14px;
+  color:#fff;
+}
+.user-admin .user-name{
+  font-size:14px;
+  font-weight:600;
+  color:#2d3e35;
+}
+.user-admin .logout-btn{
+  background:transparent;
+  border:none;
+  color:#bccfc4;
+  cursor:pointer;
+  font-size:16px;
+  padding:4px 6px;
+  border-radius:50%;
+  transition:.2s;
+}
+.user-admin .logout-btn:hover{
+  color:#d9534f;
+  background:#fde8e8;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:24px 28px;
+  margin-bottom:24px;
+  box-shadow:var(--shadow);
+  border:1px solid #e8f0ec;
   transition:.3s;
 }
-.loading.show{
-  opacity:1;
-  pointer-events:auto;
+.card:hover{
+  border-color:var(--green);
 }
-.spinner{
-  width:30px;height:30px;
-  border:3px solid #bbf7d0;
+.card h3{
+  color:var(--green-dark);
+  font-size:18px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.card h3 i{
+  color:var(--green);
+}
+
+label{
+  font-size:13px;
+  font-weight:600;
+  color:#2d3e35;
+  display:block;
+  margin-bottom:4px;
+}
+select, input{
+  width:100%;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid #e8f0ec;
+  margin-bottom:14px;
+  font-size:14px;
+  background:#fafcfa;
+  transition:.2s;
+}
+select:focus, input:focus{
+  outline:none;
+  border-color:var(--green);
+  box-shadow:0 0 0 3px rgba(47,163,107,.1);
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+th,td{
+  border:1px solid #e8f0ec;
+  padding:8px 10px;
+  text-align:center;
+}
+th{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  font-weight:600;
+}
+td input{
+  width:70px;
+  padding:6px 8px;
+  margin:0;
+  text-align:center;
+  border-radius:6px;
+}
+td input:read-only{
+  background:#f0f7f3;
+  font-weight:700;
+  color:var(--green-dark);
+}
+.good{background:#dcfce7;color:#166534;}
+.warn{background:#fef9c3;color:#854d0e;}
+.bad{background:#fee2e2;color:#991b1b;}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  border:none;
+  padding:12px 28px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(47,163,107,.25);
+}
+.btn-primary:disabled{
+  opacity:0.6;
+  cursor:not-allowed;
+  transform:none;
+}
+.btn-primary:disabled:hover{
+  transform:none;
+  box-shadow:none;
+}
+
+.btn-secondary{
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  padding:12px 28px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.btn-secondary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(37,99,235,.25);
+}
+
+.btn-group{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+footer{
+  text-align:center;
+  font-size:13px;
+  color:#bccfc4;
+  margin-top:30px;
+  padding-top:16px;
+  border-top:1px solid #e8f0ec;
+}
+
+/* ===== SPINNER INLINE (kaya punya asuransi) ===== */
+.loading-wrapper{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  justify-content:center;
+  padding:40px 0;
+  color:#9ab0a4;
+}
+.spinner-small{
+  width:20px;
+  height:20px;
+  border:3px solid #e8f0ec;
   border-top:3px solid var(--green);
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ===== FADE (ASLI, TIDAK DIUBAH) ===== */
-.fade{
-  opacity:0;
-  transform:translateY(10px);
-  transition:.4s;
+.spinner-sm{
+  display:inline-block;
+  width:18px;
+  height:18px;
+  border:3px solid rgba(255,255,255,0.3);
+  border-top:3px solid #fff;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  vertical-align:middle;
+  margin-right:6px;
 }
-.fade.show{
-  opacity:1;
-  transform:none;
+@keyframes spin{
+  to{transform:rotate(360deg)}
 }
 
-/* ===== TOAST ===== */
+/* TOAST */
 .toast{
   position:fixed;
   bottom:30px;
-  right:30px;
-  background:var(--green);
+  left:50%;
+  transform:translateX(-50%);
+  background:#1a2e24;
   color:#fff;
-  padding:14px 20px;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
-  opacity:0;
-  transform:translateY(20px);
-  transition:.4s;
+  padding:12px 28px;
+  border-radius:50px;
+  font-weight:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  display:none;
   z-index:9999;
+  font-size:14px;
 }
-.toast.show{
-  opacity:1;
-  transform:none;
+.toast.show{display:block;animation:slideUpToast .4s ease;}
+.toast.error{background:#d9534f;}
+
+@keyframes slideUpToast{
+  from{opacity:0;transform:translate(-50%,20px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media(max-width:768px){
+  .sidebar-toggle{
+    display:block;
+  }
+  .sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    transform:translateX(-100%);
+    height:100vh;
+    width:280px;
+    z-index:10;
+    box-shadow:4px 0 40px rgba(0,0,0,.15);
+  }
+  .sidebar.open{
+    transform:translateX(0);
+  }
+  .sidebar-overlay.show{
+    display:block;
+  }
+  .content{
+    padding:18px 16px;
+    padding-top:70px;
+  }
+  .page-header{
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+  }
+  .page-header h1{
+    font-size:20px;
+  }
+  .user-admin{
+    justify-content:center;
+    padding:6px 14px;
+  }
+  .user-admin .user-name{
+    font-size:13px;
+  }
+  .card{
+    padding:18px 16px;
+  }
+  .card h3{
+    font-size:16px;
+  }
+  table{
+    font-size:12px;
+  }
+  th,td{
+    padding:4px 6px;
+  }
+  td input{
+    width:55px;
+    padding:4px;
+  }
+  .btn-group{
+    flex-direction:column;
+  }
+  .btn-group button{
+    width:100%;
+    justify-content:center;
+  }
+}
+
+@media(max-width:480px){
+  .user-admin .user-name{
+    display:none;
+  }
+  table{
+    font-size:11px;
+  }
+  th,td{
+    padding:3px 4px;
+  }
+  td input{
+    width:45px;
+    padding:3px;
+    font-size:11px;
+  }
+}
+
+@media(min-width:769px){
+  .sidebar-toggle{
+    display:none !important;
+  }
+  .sidebar-overlay{
+    display:none !important;
+  }
 }
 </style>
-  
 </head>
 
-<div class="loading" id="loading">
-  <div class="spinner"></div>
-</div>
-<div class="toast" id="toast">
-  <i class="fas fa-check-circle"></i> Data berhasil disimpan
-</div>
-
 <body>
+
+<!-- ===== TOGGLE SIDEBAR MOBILE ===== -->
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 <div class="layout">
 
-<aside class="sidebar">
-  <div class="brand">
-    <i class="fas fa-notes-medical"></i>
-    <h2>ADMIN MR</h2>
-  </div>
-  <nav class="menu">
-    <a href="admin_index.html"><i class="fas fa-gauge-high"></i> Dashboard</a>
-    <a href="admin_regulasi.html"><i class="fas fa-file-medical"></i> Regulasi</a>
-    <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan Pasien</a>
-    <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
-    <a href="admin_rekapitulasi_scan.html"><i class="fas fa-trash"></i> Rekapitulasi Scan</a>
-    <a href="javascript:void(0)" class="menu-toggle" onclick="toggleImut()">
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <img src="logopanjang.png" alt="Medical Record">
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="admin_index.html"><i class="fas fa-gauge-high"></i> Dashboard</a>
+      <a href="admin_regulasi.html"><i class="fas fa-file-medical"></i> Regulasi</a>
+      <a href="admin_kunjungan.html"><i class="fas fa-chart-simple"></i> Kunjungan</a>
+      <a href="admin_jadwal.html"><i class="fas fa-calendar-check"></i> Jadwal</a>
+      
+      <!-- ===== IMUT DROPDOWN ===== -->
+      <a href="javascript:void(0)" class="menu-toggle" onclick="toggleImut()">
         <i class="fas fa-chart-line"></i>
         <span>IMUT</span>
         <i class="fas fa-chevron-down arrow" id="imutArrow"></i>
       </a>
-
       <div class="submenu" id="imutSubmenu">
         <a href="admin_imutrekammedis.html">
-            <i class="fas fa-file-medical"></i>Rekam Medis
+          <i class="fas fa-file-medical"></i> Rekam Medis
         </a>
         <a href="admin_imutpendaftaran.html">
-            <i class="fas fa-user-plus"></i>Pendaftaran
+          <i class="fas fa-user-plus"></i> Pendaftaran
         </a>
         <a href="admin_imutcustomercare.html">
-            <i class="fas fa-headset"></i>Customer Care
+          <i class="fas fa-headset"></i> Customer Care
         </a>
+      </div>
+
+      <a class="active"><i class="fas fa-chart-line"></i> Indikator</a>
+      <a href="admin_pemusnahan.html"><i class="fas fa-trash"></i> Pemusnahan</a>
+      <a href="admin_daftarasuransi.html"><i class="fas fa-shield-alt"></i> Asuransi</a>
+    </nav>
+  </aside>
+
+  <!-- ===== CONTENT ===== -->
+  <main class="content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <h1>Indikator <span>Rawat Inap</span></h1>
+      
+      <div class="user-admin">
+        <div class="avatar" id="avatarLetter">A</div>
+        <span class="user-name" id="userNameDisplay">Admin</span>
+        <button class="logout-btn" onclick="logout()" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
     </div>
-    <a class="active"><i class="fas fa-chart-simple"></i> Indikator</a>
-    <a href="admin_daftarasuransi.html"><i class="fas fa-shield-alt"></i> Daftar Asuransi</a>
-  </nav>
-</aside>
 
-<main class="content" id="content">
+    <!-- CARD INPUT -->
+    <div class="card">
+      <h3><i class="fas fa-pen-to-square"></i> Input Data Indikator</h3>
+      <label>Tahun</label>
+      <select id="tahun"></select>
 
-<div class="header">
-  <h1>Indikator Rawat Inap</h1>
-  <div style="display:flex;gap:12px;align-items:center">
-    <div class="user">
-      <i class="fas fa-user-shield"></i> Admin
+      <div style="overflow-x:auto;">
+        <table id="inputTable">
+          <thead>
+            <tr>
+              <th>Bulan</th>
+              <th>TT</th>
+              <th>HP</th>
+              <th>BOR</th>
+              <th>LOS</th>
+              <th>TOI</th>
+              <th>BTO</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <br>
+      <div class="btn-group">
+        <button class="btn-primary" id="simpanBtn" onclick="simpan()">
+          <i class="fas fa-save"></i> Simpan
+        </button>
+        <button class="btn-secondary" onclick="exportExcel()">
+          <i class="fas fa-file-excel"></i> Export Excel
+        </button>
+      </div>
     </div>
-    <button class="logout" onclick="logout()">
-      <i class="fas fa-right-from-bracket"></i> Logout
-    </button>
-  </div>
+
+    <!-- CARD REKAP -->
+    <div class="card">
+      <h3><i class="fas fa-table"></i> <span id="judulTabel">Rekap Indikator</span></h3>
+      <div style="overflow-x:auto;">
+        <div id="tabelContainer">
+          <div class="loading-wrapper">
+            <div class="spinner-small"></div>
+            <span>Memuat data indikator...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD GRAFIK -->
+    <div class="card">
+      <h3><i class="fas fa-chart-bar"></i> <span id="judulGrafik">Grafik Indikator</span></h3>
+      <div style="height:380px;">
+        <canvas id="chart"></canvas>
+      </div>
+    </div>
+
+    <footer>© 2025 RSU An'Nimah • Unit Rekam Medis</footer>
+  </main>
 </div>
 
-<div class="card">
-<h3>Input Data Indikator</h3>
-<label>Tahun</label>
-<select id="tahun"></select>
-
-<table id="inputTable">
-<thead>
-<tr><th>Bulan</th><th>TT</th><th>HP</th><th>BOR</th><th>LOS</th><th>TOI</th><th>BTO</th></tr>
-</thead>
-<tbody></tbody>
-</table><br>
-
-<button class="primary" onclick="simpan()">💾 Simpan</button>
-<button class="secondary">📤 Export Excel</button>
-</div>
-
-<div class="card">
-<h3 id="judulTabel"></h3>
-<table>
-<thead>
-<tr><th>Bulan</th><th>TT</th><th>HP</th><th>BOR</th><th>LOS</th><th>TOI</th><th>BTO</th></tr>
-</thead>
-<tbody id="tabelData"></tbody>
-</table>
-</div>
-
-<div class="card">
-<h3 id="judulGrafik"></h3>
-<div style="height:420px"><canvas id="chart"></canvas></div>
-</div>
-
-<footer>© 2025 Admin Medical Record RSU An Ni'mah</footer>
-</main>
-</div>
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toastMsg"></div>
 
 <script>
-if(sessionStorage.getItem("adminLogin") !== "true"){
-  window.location.href = "admin_index.html";
+// ========== CEK LOGIN ==========
+if (!sessionStorage.getItem('adminName')) {
+  window.location.href = 'index.html';
 }
-const URL="https://script.google.com/macros/s/AKfycbyS6F1g4_EA2pdQywCymutFVjcAWhD0qoZGVkrACZPC97cENoWdh7r6vWQ7DihV14XD/exec";
-const bulan=["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
-const TARGET={BOR:[60,85],LOS:[6,9],TOI:[1,3],BTO:[40,999]};
-const tbody=document.querySelector("#inputTable tbody");
-const chartEl=document.getElementById("chart");
-const loading=document.getElementById("loading");
-const toast=document.getElementById("toast");
-const content=document.getElementById("content");
-const cards=document.querySelectorAll(".card");
 
-bulan.forEach(b=>{
-  tbody.innerHTML+=`
-  <tr>
-    <td>${b}</td>
-    <td><input data-b="${b}" data-f="tt"></td>
-    <td><input data-b="${b}" data-f="hp"></td>
-    <td><input data-b="${b}" data-f="bor"></td>
-    <td><input data-b="${b}" data-f="los"></td>
-    <td><input data-b="${b}" data-f="toi"></td>
-    <td><input data-b="${b}" data-f="bto"></td>
-  </tr>`;
+// ========== GET ADMIN USERNAME ==========
+function getAdminName() {
+  return sessionStorage.getItem('adminName') || 'Admin';
+}
+
+// ========== TOAST ==========
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toastMsg');
+  toast.textContent = msg;
+  toast.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========== LOGOUT ==========
+function logout() {
+  if (confirm('Yakin ingin logout?')) {
+    sessionStorage.removeItem('adminName');
+    sessionStorage.removeItem('toastShown');
+    showToast('👋 Logout berhasil!');
+    setTimeout(() => window.location.href = 'index.html', 600);
+  }
+}
+
+// ========== SIDEBAR TOGGLE MOBILE ==========
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+
+// ========== TOGGLE IMUT DROPDOWN ==========
+function toggleImut() {
+  const sub = document.getElementById('imutSubmenu');
+  const arrow = document.getElementById('imutArrow');
+  sub.classList.toggle('show');
+  arrow.classList.toggle('rotate');
+}
+
+// ========== INDIKATOR ==========
+const API_URL = "https://script.google.com/macros/s/AKfycbyS6F1g4_EA2pdQywCymutFVjcAWhD0qoZGVkrACZPC97cENoWdh7r6vWQ7DihV14XD/exec";
+const bulan = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+const TARGET = { BOR: [60, 85], LOS: [6, 9], TOI: [1, 3], BTO: [40, 999] };
+
+const tbody = document.querySelector("#inputTable tbody");
+const tahun = document.getElementById("tahun");
+const chartEl = document.getElementById("chart");
+let chart;
+
+// ========== BUAT ROW INPUT ==========
+bulan.forEach(b => {
+  tbody.innerHTML += `
+    <tr>
+      <td><strong>${b}</strong></td>
+      <td><input data-b="${b}" data-f="tt"></td>
+      <td><input data-b="${b}" data-f="hp"></td>
+      <td><input data-b="${b}" data-f="bor"></td>
+      <td><input data-b="${b}" data-f="los"></td>
+      <td><input data-b="${b}" data-f="toi"></td>
+      <td><input data-b="${b}" data-f="bto"></td>
+    </tr>
+  `;
 });
 
-function showLoading(){loading.classList.add("show")}
-function hideLoading(){loading.classList.remove("show")}
-function showToast(){toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),2500)}
+function parseIDNumber(val) {
+  if (!val) return 0;
+  return Number(val.toString().replace(/\./g, "").replace(",", ".")) || 0;
+}
 
-function simpan(){
-  showLoading();
-  const th=tahun.value,data=[];
-  bulan.forEach(b=>{
-    const o={tahun:th,bulan:b};
-    document.querySelectorAll(`[data-b="${b}"]`).forEach(i=>o[i.dataset.f] = parseIDNumber(i.value));
-    data.push(o);
-  });
-  fetch(URL,{method:"POST",body:JSON.stringify({bulk:true,data})})
-    .then(()=>{loadData();showToast()});
-}
-function parseIDNumber(val){
-  if(!val) return 0;
-  return Number(
-    val
-      .toString()
-      .replace(/\./g, "")   // hapus titik ribuan
-      .replace(",", ".")    // koma → desimal
-  ) || 0;
-}
-function formatID(val){
-  if(val === "" || val === null || isNaN(val)) return "0";
+function formatID(val) {
+  if (val === "" || val === null || isNaN(val)) return "0";
   return Number(val).toLocaleString("id-ID");
 }
-function formatID2(val){
-  if(val === "" || val === null || isNaN(val)) return "0,00";
+
+function formatID2(val) {
+  if (val === "" || val === null || isNaN(val)) return "0,00";
   return Number(val).toLocaleString("id-ID", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
 }
 
-let chart;
-
-function loadData(){
-  showLoading();
-
-  fetch(URL+"?tahun="+tahun.value)
-    .then(r=>r.json())
-    .then(d=>{
-
-      isiInputDariServer(d);
-
-      let html="";
-      let bor=[], los=[], toi=[], bto=[];
-
-      bulan.forEach(b=>{
-        const x = d.find(i=>i.bulan===b) || {};
-
-        html+=`
-        <tr>
-          <td>${b}</td>
-          <td>${formatID(x.tt)}</td>
-          <td>${formatID(x.hp)}</td>
-          <td class="${x.bor<60?'bad':x.bor>85?'warn':'good'}">${formatID2(x.bor)}</td>
-          <td class="${x.los<6?'bad':x.los>9?'warn':'good'}">${formatID2(x.los)}</td>
-          <td class="${x.toi<1?'bad':x.toi>3?'warn':'good'}">${formatID2(x.toi)}</td>
-          <td class="${x.bto<40?'bad':'good'}">${formatID2(x.bto)}</td>
-        </tr>
-        `;
-
-        bor.push(x.bor||0);
-        los.push(x.los||0);
-        toi.push(x.toi||0);
-        bto.push(x.bto||0);
-      });
-
-      tabelData.innerHTML = html;
-      judulTabel.innerText = "Rekap Tahun " + tahun.value;
-      judulGrafik.innerText = "Grafik Tahun " + tahun.value;
-
-      if(chart) chart.destroy();
-
-      chart = new Chart(chartEl,{
-  data:{
-    labels:bulan,
-    datasets:[
-      {
-        type:"bar",
-        label:"BOR (%)",
-        data:bor,
-        backgroundColor:"rgba(22,163,74,0.6)",
-        yAxisID:"y",
-        order:1
-      },
-      {
-        type:"line",
-        label:"LOS",
-        data:los,
-        borderColor:"#2563eb",
-        tension:0.3,
-        yAxisID:"y1",
-        order:2
-      },
-      {
-        type:"line",
-        label:"TOI",
-        data:toi,
-        borderColor:"#dc2626",
-        tension:0.3,
-        yAxisID:"y1",
-        order:2
-      },
-      {
-        type:"line",
-        label:"BTO",
-        data:bto,
-        borderColor:"#ca8a04",
-        tension:0.3,
-        yAxisID:"y1",
-        order:2
-      }
-    ]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    scales:{
-      y:{
-        position:"left",
-        title:{ display:true, text:"BOR (%)" },
-        min:0,
-        max:100
-      },
-      y1:{
-        position:"right",
-        title:{ display:true, text:"LOS / TOI / BTO" },
-        grid:{ drawOnChartArea:false },
-        min:0
-      }
-    }
-  }
-});
-
-      hideLoading();
-    });
+function getColor(value, min, max) {
+  if (value < min) return 'bad';
+  if (value > max) return 'warn';
+  return 'good';
 }
 
-function isiInputDariServer(data){
-  bulan.forEach(b=>{
-    const x = data.find(i=>i.bulan===b) || {};
-    document.querySelectorAll(`[data-b="${b}"]`).forEach(inp=>{
-      const v = x[inp.dataset.f] ?? 0;
-
-      inp.value = ["bor","los","toi","bto"].includes(inp.dataset.f)
-        ? formatID2(v)
-        : formatID(v);
+// ========== SIMPAN ==========
+function simpan() {
+  const btn = document.getElementById('simpanBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-sm"></span> Menyimpan...';
+  
+  const data = [];
+  bulan.forEach(b => {
+    const o = { tahun: tahun.value, bulan: b };
+    document.querySelectorAll(`[data-b="${b}"]`).forEach(i => {
+      o[i.dataset.f] = parseIDNumber(i.value);
     });
+    data.push(o);
+  });
+  
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({ bulk: true, data })
+  })
+  .then(r => r.json())
+  .then(() => {
+    showToast('✅ Data berhasil disimpan!');
+    loadData();
+    btn.innerHTML = '<i class="fas fa-save"></i> Simpan';
+    btn.disabled = false;
+  })
+  .catch(() => {
+    showToast('❌ Gagal menyimpan data!', true);
+    btn.innerHTML = '<i class="fas fa-save"></i> Simpan';
+    btn.disabled = false;
   });
 }
-const tahunSelect = document.getElementById("tahun");
 
-function generateTahun(start = 2020, future = 1){
+// ========== LOAD DATA ==========
+function loadData() {
+  const container = document.getElementById('tabelContainer');
+  container.innerHTML = `
+    <div class="loading-wrapper">
+      <div class="spinner-small"></div>
+      <span>Memuat data indikator...</span>
+    </div>
+  `;
+
+  fetch(API_URL + "?tahun=" + tahun.value)
+    .then(r => r.json())
+    .then(d => {
+      let html = `<table>
+        <thead>
+          <tr>
+            <th>Bulan</th>
+            <th>TT</th>
+            <th>HP</th>
+            <th>BOR</th>
+            <th>LOS</th>
+            <th>TOI</th>
+            <th>BTO</th>
+          </tr>
+        </thead>
+        <tbody>`;
+      let bor = [], los = [], toi = [], bto = [];
+      
+      bulan.forEach(b => {
+        const x = d.find(i => i.bulan === b) || {};
+        const borVal = x.bor || 0;
+        const losVal = x.los || 0;
+        const toiVal = x.toi || 0;
+        const btoVal = x.bto || 0;
+        
+        html += `
+          <tr>
+            <td><strong>${b}</strong></td>
+            <td>${formatID(x.tt)}</td>
+            <td>${formatID(x.hp)}</td>
+            <td class="${getColor(borVal, 60, 85)}">${formatID2(borVal)}</td>
+            <td class="${getColor(losVal, 6, 9)}">${formatID2(losVal)}</td>
+            <td class="${getColor(toiVal, 1, 3)}">${formatID2(toiVal)}</td>
+            <td class="${getColor(btoVal, 40, 999)}">${formatID2(btoVal)}</td>
+          </tr>
+        `;
+        
+        bor.push(borVal);
+        los.push(losVal);
+        toi.push(toiVal);
+        bto.push(btoVal);
+      });
+
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+      
+      document.getElementById('judulTabel').textContent = "Rekap Indikator Tahun " + tahun.value;
+      document.getElementById('judulGrafik').textContent = "Grafik Indikator Tahun " + tahun.value;
+
+      // ========== CHART ==========
+      if (chart) chart.destroy();
+      chart = new Chart(chartEl, {
+        data: {
+          labels: bulan,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'BOR (%)',
+              data: bor,
+              backgroundColor: 'rgba(47,163,107,0.6)',
+              yAxisID: 'y',
+              order: 1
+            },
+            {
+              type: 'line',
+              label: 'LOS',
+              data: los,
+              borderColor: '#2563eb',
+              tension: 0.3,
+              yAxisID: 'y1',
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'TOI',
+              data: toi,
+              borderColor: '#dc2626',
+              tension: 0.3,
+              yAxisID: 'y1',
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'BTO',
+              data: bto,
+              borderColor: '#ca8a04',
+              tension: 0.3,
+              yAxisID: 'y1',
+              order: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+            }
+          },
+          scales: {
+            y: {
+              position: 'left',
+              title: { display: true, text: 'BOR (%)' },
+              min: 0,
+              max: 100
+            },
+            y1: {
+              position: 'right',
+              title: { display: true, text: 'LOS / TOI / BTO' },
+              grid: { drawOnChartArea: false },
+              min: 0
+            }
+          }
+        }
+      });
+    })
+    .catch(() => {
+      showToast('❌ Gagal memuat data!', true);
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Gagal memuat data</p>
+        </div>
+      `;
+    });
+}
+
+// ========== EXPORT EXCEL ==========
+function exportExcel() {
+  showToast('📤 Fitur export Excel akan segera tersedia!');
+}
+
+// ========== INIT TAHUN ==========
+(function() {
   const now = new Date().getFullYear();
-  for(let y = start; y <= now + future; y++){
-    const opt = document.createElement("option");
-    opt.value = y;
-    opt.textContent = y;
-    if(y === now) opt.selected = true;
-    tahunSelect.appendChild(opt);
+  for (let y = 2020; y <= now + 1; y++) {
+    tahun.innerHTML += `<option ${y === now ? "selected" : ""}>${y}</option>`;
   }
-}
+})();
 
-generateTahun(2020, 1); // 2020 s/d tahun depan
-window.addEventListener("load",()=>{
-  content.classList.add("show");
-  cards.forEach((c,i)=>setTimeout(()=>c.classList.add("show"),i*150));
+// ========== ONLOAD ==========
+document.addEventListener("DOMContentLoaded", function() {
+  const name = getAdminName();
+  document.getElementById('userNameDisplay').textContent = name;
+  document.getElementById('avatarLetter').textContent = name.charAt(0).toUpperCase();
+  
   loadData();
-});
-tahun.onchange=loadData;
-
-function logout(){
-  if(confirm("Yakin ingin logout?")){
-    sessionStorage.removeItem("adminLogin");
-    window.location.href = "admin_index.html";
+  
+  const toastShown = sessionStorage.getItem('toastShown');
+  if (!toastShown) {
+    setTimeout(() => showToast(`👋 Selamat datang, ${name}!`), 300);
+    sessionStorage.setItem('toastShown', 'true');
   }
-}
-function toggleImut(){
-  const sub = document.getElementById("imutSubmenu");
-  const arrow = document.getElementById("imutArrow");
+});
 
-  sub.classList.toggle("show");
-  arrow.classList.toggle("rotate");
-}
+tahun.onchange = loadData;
+
+// ========== SHORTCUT ==========
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') logout();
+});
+
+// ========== CLOSE SIDEBAR SAAT RESIZE ==========
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    closeSidebar();
+  }
+});
 </script>
+
 </body>
 </html>
