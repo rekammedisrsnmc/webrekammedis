@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" href="logorekammedis.ico">
+<title>Daftar Asuransi | Medical Record</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+  --green:#2fa36b;
+  --green-dark:#1f7f53;
+  --bg:#eef5f2;
+  --card:#ffffff;
+  --shadow:0 12px 30px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
+body{background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+
+header{background:linear-gradient(135deg,#fff,#e9f7f0);padding:15px 20px;box-shadow:var(--shadow)}
+.logo{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.logo img{width:300px;height:70px}
+.admin-btn{
+  margin-left:auto;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff;
+  padding:8px 18px;
+  border-radius:30px;
+  font-size:12px;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  box-shadow:var(--shadow);
+  transition:.3s;
+}
+.admin-btn:hover{transform:translateY(-2px)}
+
+nav ul{
+  list-style:none;display:flex;justify-content:center;flex-wrap:wrap;
+  gap:6px;padding:10px;margin-top:15px;
+  background:#fff;border-radius:50px;box-shadow:var(--shadow)
+}
+nav ul li a{
+  text-decoration:none;color:#444;font-weight:600;font-size:14px;
+  border-radius:50px;padding:6px 16px;
+  display:flex;align-items:center;gap:6px;transition:.3s
+}
+nav ul li a:hover{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  color:#fff
+}
+
+main{flex:1;padding:40px 20px}
+
+.container{max-width:1200px;margin:auto;animation:fadeUp .6s ease;}
+
+.title-container{
+  background:#fff;border-radius:22px;padding:30px;
+  box-shadow:var(--shadow);display:flex;gap:20px;
+  align-items:center;margin-bottom:40px
+}
+.title-icon{font-size:40px;color:var(--green)}
+.title-text h1{font-size:32px;color:var(--green-dark)}
+.title-text p{margin-top:6px;color:#555}
+
+.card{
+  background:#fff;border-radius:22px;padding:24px 30px 30px 30px;
+  box-shadow:var(--shadow);margin-bottom:30px;
+  min-height:200px;
+}
+
+/* ===== LOADING SPINNER SEDERHANA ===== */
+.loading-wrapper {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#555;
+  padding:20px 0;
+}
+
+.spinner {
+  width:20px;
+  height:20px;
+  border:3px solid #ddd;
+  border-top:3px solid var(--green);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform:rotate(360deg); }
+}
+
+/* ===== LIST ===== */
+.asuransi-item{
+  border:1px solid #e5e5e5;
+  border-radius:18px;
+  margin-bottom:14px;
+  overflow:hidden;
+  transition:0.3s;
+  opacity:0;
+  animation:slideUp 0.4s ease forwards;
+}
+.asuransi-item:hover{
+  border-color:var(--green);
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+.asuransi-item:last-child{
+  margin-bottom:0;
+}
+
+.asuransi-header{
+  padding:16px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+  background:#f9fdfb;
+  transition:0.2s;
+}
+.asuransi-header:hover{
+  background:#f0f8f3;
+}
+.asuransi-header .left{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.asuransi-header .left h3{
+  font-size:16px;
+  color:var(--green-dark);
+}
+.asuransi-header .left .badge{
+  font-size:11px;
+  background:var(--bg);
+  padding:2px 12px;
+  border-radius:12px;
+  color:#666;
+}
+.asuransi-header .right a{
+  font-size:13px;
+  color:var(--green);
+  text-decoration:none;
+  padding:4px 12px;
+  border-radius:12px;
+  background:var(--bg);
+  transition:0.3s;
+}
+.asuransi-header .right a:hover{
+  background:var(--green);
+  color:#fff;
+}
+.asuransi-header .right .expand-icon{
+  color:#999;
+  font-size:14px;
+  transition:0.3s;
+  margin-left:8px;
+}
+.asuransi-header .right .expand-icon.rotated{
+  transform:rotate(180deg);
+}
+
+.asuransi-detail{
+  display:none;
+  padding:20px 24px;
+  background:#fff;
+  border-top:1px solid #eee;
+}
+.asuransi-detail.show{
+  display:block;
+  animation:slideDown 0.3s ease;
+}
+.asuransi-detail .row{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  gap:12px;
+  padding:6px 0;
+  border-bottom:1px solid #f5f5f5;
+}
+.asuransi-detail .row:last-child{
+  border-bottom:none;
+}
+.asuransi-detail .row .label{
+  font-weight:600;
+  color:#555;
+  font-size:14px;
+}
+.asuransi-detail .row .value{
+  color:#333;
+  font-size:14px;
+  word-break:break-all;
+}
+.asuransi-detail .row .value.password{
+  font-family:monospace;
+  letter-spacing:1px;
+  background:#f8f9fa;
+  padding:2px 10px;
+  border-radius:6px;
+  display:inline-block;
+}
+.asuransi-detail .row .value a{
+  color:var(--green);
+  text-decoration:none;
+}
+.asuransi-detail .row .value a:hover{
+  text-decoration:underline;
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state{
+  text-align:center;
+  padding:60px 20px;
+  color:#999;
+  animation:fadeScale 0.5s ease;
+}
+.empty-state i{
+  font-size:60px;
+  color:var(--green);
+  opacity:0.3;
+  display:block;
+  margin-bottom:15px;
+}
+.empty-state h3{
+  color:#555;
+  font-size:18px;
+  margin-bottom:6px;
+}
+.empty-state p{
+  font-size:14px;
+  color:#bbb;
+}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#1f7f53;
+  color:#fff;
+  padding:12px 28px;
+  border-radius:40px;
+  font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  display:none;
+  z-index:9999;
+}
+.toast.show{display:block;animation:slideUpToast 0.4s ease;}
+.toast.error{background:#d9534f;}
+
+/* ===== DROPDOWN ===== */
+.dropdown-hubungi{position:relative}
+.dropdown-content-hubungi{
+  display:none;
+  position:absolute;
+  background:#fff;
+  min-width:180px;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  z-index:9;
+}
+.dropdown-content-hubungi a{
+  padding:10px 15px;
+  display:block;
+  font-size:14px;
+  color:#333;
+  text-decoration:none;
+}
+.dropdown-content-hubungi a:hover{
+  background:#e9f7f0;
+  color:var(--green-dark);
+}
+.dropdown-hubungi:hover .dropdown-content-hubungi{display:block}
+
+footer{
+  background:#fff;padding:30px 20px;
+  box-shadow:var(--shadow)
+}
+.small{font-size:14px;color:#666}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes slideUpToast{
+  from{opacity:0;transform:translate(-50%,20px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+@keyframes fadeScale{
+  from{opacity:0;transform:scale(0.95)}
+  to{opacity:1;transform:scale(1)}
+}
+
+@media (max-width: 768px) {
+  .asuransi-header{
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .asuransi-header .right{
+    margin-left:auto;
+  }
+  .asuransi-detail .row{
+    grid-template-columns:1fr;
+    gap:4px;
+  }
+  .asuransi-detail .row .label{
+    font-size:12px;
+    color:#888;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    <img src="logopanjang.png">
+    <a href="admin_asuransi.html" class="admin-btn">
+      <i class="fas fa-user-shield"></i> Admin Dashboard
+    </a>
+  </div>
+
+  <nav>
+    <ul>
+      <li><a href="index.html"><i class="fas fa-home"></i> BERANDA</a></li>
+      <li><a href="profil.html"><i class="fas fa-user-circle"></i> PROFIL</a></li>
+      <li><a href="regulasi.html"><i class="fas fa-swatchbook"></i> REGULASI</a></li>
+      <li><a href="informasi.html"><i class="fas fa-info-circle"></i> INFORMASI</a></li>
+      <li><a href="layanan.html"><i class="fas fa-headset"></i> LAYANAN INTERNAL</a></li>
+      <li><a href="indikator.html"><i class="fas fa-chart-line"></i> INDIKATOR</a></li>
+      <li><a href="laporan.html"><i class="fas fa-database"></i> LAPORAN</a></li>
+      <li><a href="kegiatan.html"><i class="fas fa-calendar-check"></i> KEGIATAN</a></li>
+      <li class="dropdown-hubungi">
+          <a class="dropbtn-hubungi"><i class="fas fa-phone"></i> HUBUNGI KAMI <i class="fas fa-caret-down"></i></a>
+          <div class="dropdown-content-hubungi">
+            <a href="#"><i class="fas fa-envelope"></i> Email</a>
+            <a href="#"><i class="fas fa-phone"></i> Telepon</a>
+            <a href="https://wa.me/6283153300859"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            <a href="#"><i class="fas fa-map-marker-alt"></i> Alamat</a>
+          </div>
+        </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<div class="container">
+
+<div class="title-container">
+  <div class="title-icon"><i class="fas fa-clipboard-list"></i></div>
+  <div class="title-text">
+    <h1>Daftar Asuransi</h1>
+    <p>Data asuransi & akun untuk klaim pasien</p>
+  </div>
+</div>
+
+<div class="card">
+  <div id="list">
+    <!-- LOADING SPINNER SEDERHANA -->
+    <div class="loading-wrapper">
+      <div class="spinner"></div>
+      <span>Memuat data asuransi...</span>
+    </div>
+  </div>
+</div>
+
+</div>
+</main>
+
+<div class="toast" id="toastMsg"></div>
+
+<footer>
+<strong>MEDICAL RECORD</strong>
+<div class="small">© 2025 RSU An'Nimah • Unit Rekam Medis</div>
+</footer>
+
+<script>
+// ========== KONFIGURASI ==========
+// ⚠️ GANTI DENGAN URL DEPLOYMENT APPS SCRIPT ANDA
+const API_URL = "https://script.google.com/macros/s/AKfycbyCmV0DgMN8R2zxQZdnZLSCS7sBmAjcL7E0pMsX7eEqosgRtaPIOxE2l4hG_UVocx6VMg/exec";
+
+// ========== TOAST ==========
+function showToast(msg, isError = false) {
+  const toast = document.getElementById('toastMsg');
+  toast.textContent = msg;
+  toast.className = 'toast show' + (isError ? ' error' : '');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ========== SHOW LOADING ==========
+function showLoading() {
+  const box = document.getElementById('list');
+  box.innerHTML = `
+    <div class="loading-wrapper">
+      <div class="spinner"></div>
+      <span>Memuat data asuransi...</span>
+    </div>
+  `;
+}
+
+// ========== LOAD DATA ==========
+function load() {
+  showLoading();
+  
+  fetch(`${API_URL}?action=get`)
+    .then(res => {
+      if (!res.ok) throw new Error('Network error');
+      return res.json();
+    })
+    .then(d => {
+      render(d);
+    })
+    .catch(err => {
+      console.error('❌ Error load:', err);
+      showToast('⚠️ Gagal memuat data', true);
+      render([]);
+    });
+}
+
+// ========== RENDER ==========
+function render(data) {
+  const box = document.getElementById("list");
+  
+  if (!data || data.length === 0) {
+    box.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <h3>Belum Ada Data</h3>
+        <p>Belum ada data asuransi yang tersimpan</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  data.forEach((item, index) => {
+    // Format data: [asuransi, linkApp, akun, password, nomorProvider, timestamp]
+    const asuransi = item[0] || '-';
+    const linkApp = item[1] || '';
+    const akun = item[2] || '-';
+    const password = item[3] || '-';
+    const nomorProvider = item[4] || '-';
+    const timestamp = item[5] || '';
+    
+    html += `
+      <div class="asuransi-item" style="animation-delay:${index * 0.06}s" data-index="${index}">
+        <div class="asuransi-header" onclick="toggleDetail(this)">
+          <div class="left">
+            <h3>${asuransi}</h3>
+            ${akun !== '-' ? `<span class="badge"><i class="fas fa-user"></i> ${akun}</span>` : ''}
+            ${nomorProvider !== '-' ? `<span class="badge"><i class="fas fa-phone"></i> ${nomorProvider}</span>` : ''}
+          </div>
+          <div class="right">
+            ${linkApp ? `<a href="${linkApp}" target="_blank"><i class="fas fa-external-link-alt"></i> Buka</a>` : ''}
+            <i class="fas fa-chevron-down expand-icon"></i>
+          </div>
+        </div>
+        <div class="asuransi-detail">
+          <div class="row">
+            <span class="label">Nama Asuransi</span>
+            <span class="value">${asuransi}</span>
+          </div>
+          <div class="row">
+            <span class="label">Link Aplikasi</span>
+            <span class="value">${linkApp ? `<a href="${linkApp}" target="_blank">${linkApp}</a>` : '-'}</span>
+          </div>
+          <div class="row">
+            <span class="label">Akun / Username</span>
+            <span class="value">${akun}</span>
+          </div>
+          <div class="row">
+            <span class="label">Password</span>
+            <span class="value password">${password}</span>
+          </div>
+          <div class="row">
+            <span class="label">Nomor Provider</span>
+            <span class="value">${nomorProvider}</span>
+          </div>
+          ${timestamp ? `
+          <div class="row" style="border-bottom:none;padding-top:10px;">
+            <span class="label" style="color:#999;font-size:12px;">Ditambahkan</span>
+            <span class="value" style="color:#999;font-size:12px;">${timestamp}</span>
+          </div>` : ''}
+        </div>
+      </div>
+    `;
+  });
+  
+  box.innerHTML = html;
+}
+
+// ========== TOGGLE DETAIL ==========
+function toggleDetail(el) {
+  const detail = el.nextElementSibling;
+  const icon = el.querySelector('.expand-icon');
+  
+  detail.classList.toggle('show');
+  icon.classList.toggle('rotated');
+}
+
+// ========== INIT ==========
+window.onload = load;
+</script>
+
+</body>
+</html>
