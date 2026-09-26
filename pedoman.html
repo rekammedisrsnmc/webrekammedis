@@ -130,6 +130,72 @@ main{
   box-shadow:var(--shadow);
 }
 
+/* ===== SEARCH BAR ===== */
+.search-wrapper{
+  position: relative;
+  margin-bottom: 20px;
+}
+.search-wrapper i.search-icon{
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 16px;
+  pointer-events: none;
+}
+.search-input{
+  width: 100%;
+  padding: 14px 45px 14px 45px;
+  border: 2px solid #e5e5e5;
+  border-radius: 14px;
+  font-size: 14px;
+  transition: .3s;
+  background: #f9fbfa;
+  box-sizing: border-box;
+}
+.search-input:focus{
+  outline: none;
+  border-color: var(--green);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(47, 163, 107, 0.1);
+}
+.search-clear{
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e0e0e0;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 12px;
+  transition: .3s;
+}
+.search-clear:hover{
+  background: #d0d0d0;
+  color: #333;
+}
+.search-clear.show{
+  display: flex;
+}
+.search-info{
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 10px;
+  padding-left: 4px;
+  display: none;
+}
+.search-info.show{
+  display: block;
+}
+
 #loading{
   display:flex;
   align-items:center;
@@ -218,6 +284,12 @@ main{
 .file-name i{
   color:var(--green);
 }
+.file-name mark{
+  background: #ffeb3b;
+  color: #333;
+  padding: 0 2px;
+  border-radius: 3px;
+}
 
 /* indikator buka */
 .open-indicator{
@@ -227,6 +299,26 @@ main{
   display:flex;
   align-items:center;
   gap:6px;
+}
+
+/* NO RESULT */
+.no-result{
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+.no-result i{
+  font-size: 48px;
+  color: #ddd;
+  margin-bottom: 15px;
+  display: block;
+}
+.no-result p{
+  font-size: 15px;
+}
+.no-result .keyword{
+  color: var(--green-dark);
+  font-weight: 600;
 }
 
 /* ===== TOAST ===== */
@@ -457,6 +549,22 @@ footer{
 </section>
 
 <section class="pedoman-container">
+  <!-- SEARCH BAR -->
+  <div class="search-wrapper">
+    <i class="fas fa-search search-icon"></i>
+    <input 
+      type="text" 
+      id="searchInput" 
+      class="search-input" 
+      placeholder="Cari pedoman berdasarkan nama..."
+      autocomplete="off"
+    >
+    <button class="search-clear" id="searchClear" title="Hapus pencarian">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="search-info" id="searchInfo"></div>
+
   <div id="loading">
     <div class="spinner"></div>
     <span>Sedang memuat data...</span>
@@ -602,36 +710,133 @@ const API = "https://script.google.com/macros/s/AKfycbyA2-UiroRUKF5LkhyXYYDV-jIK
 const list = document.getElementById("fileList");
 const loading = document.getElementById("loading");
 
+// DOM Search
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const searchInfo = document.getElementById('searchInfo');
+
+let allPedoman = [];
+let filteredPedoman = [];
+
+// ========== HIGHLIGHT MATCH ==========
+function highlightText(text, keyword){
+  if(!keyword) return text;
+  const safeKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${safeKeyword})`, 'gi');
+  return text.replace(regex, '<mark>$1</mark>');
+}
+
+// ========== RENDER PEDOMAN ==========
+function renderPedoman(){
+  const keyword = searchInput.value.trim();
+  list.innerHTML = "";
+
+  // Update info pencarian
+  if(keyword && filteredPedoman.length > 0){
+    searchInfo.textContent = `Menampilkan ${filteredPedoman.length} dari ${allPedoman.length} pedoman untuk "${keyword}"`;
+    searchInfo.classList.add('show');
+  } else if(keyword && filteredPedoman.length === 0){
+    searchInfo.textContent = `Tidak ada pedoman yang cocok dengan "${keyword}"`;
+    searchInfo.classList.add('show');
+  } else {
+    searchInfo.classList.remove('show');
+  }
+
+  // Tampilkan pesan jika tidak ada hasil
+  if(filteredPedoman.length === 0){
+    list.innerHTML = `
+      <div class="no-result">
+        <i class="fas fa-search"></i>
+        <p>Tidak ada pedoman yang cocok dengan <span class="keyword">"${keyword}"</span></p>
+        <p style="font-size:13px;margin-top:8px;">Coba gunakan kata kunci lain</p>
+      </div>
+    `;
+    return;
+  }
+
+  filteredPedoman.forEach(x => {
+    const highlightedName = keyword ? highlightText(x.nama, keyword) : x.nama;
+    
+    list.innerHTML += `
+      <li>
+        <a href="${x.link}" target="_blank" class="file-link">
+          <div class="file-item">
+            <div class="file-name">
+              <i class="${x.icon || 'fas fa-file'}"></i>
+              ${highlightedName}
+            </div>
+            <div class="open-indicator">
+              <i class="fas fa-arrow-up-right-from-square"></i> Buka
+            </div>
+          </div>
+        </a>
+      </li>
+    `;
+  });
+}
+
+// ========== SEARCH HANDLER ==========
+function performSearch(){
+  const keyword = searchInput.value.trim().toLowerCase();
+  
+  if(!keyword){
+    filteredPedoman = [...allPedoman];
+    searchClear.classList.remove('show');
+  } else {
+    filteredPedoman = allPedoman.filter(x => 
+      x.nama.toLowerCase().includes(keyword)
+    );
+    searchClear.classList.add('show');
+  }
+  
+  renderPedoman();
+}
+
+// Event: input search (real-time dengan debounce)
+let searchTimeout;
+searchInput.addEventListener('input', function(){
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(performSearch, 200);
+});
+
+// Event: tekan Enter
+searchInput.addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    clearTimeout(searchTimeout);
+    performSearch();
+  }
+  if(e.key === 'Escape'){
+    searchInput.value = '';
+    performSearch();
+  }
+});
+
+// Event: tombol clear
+searchClear.addEventListener('click', function(){
+  searchInput.value = '';
+  filteredPedoman = [...allPedoman];
+  searchClear.classList.remove('show');
+  renderPedoman();
+  searchInput.focus();
+});
+
+// ========== FETCH DATA ==========
 fetch(API + "?menu=regulasi")
   .then(res => res.json())
   .then(data => {
     loading.style.display = "none";
-    list.innerHTML = "";
 
     const pedoman = data.filter(x => x.target === "pedoman");
+    allPedoman = pedoman;
+    filteredPedoman = [...allPedoman];
 
     if (pedoman.length === 0) {
       list.innerHTML = "<li style='padding:20px;text-align:center;color:#999;'>Tidak ada pedoman.</li>";
       return;
     }
 
-    pedoman.forEach(x => {
-      list.innerHTML += `
-        <li>
-          <a href="${x.link}" target="_blank" class="file-link">
-            <div class="file-item">
-              <div class="file-name">
-                <i class="${x.icon || 'fas fa-file'}"></i>
-                ${x.nama}
-              </div>
-              <div class="open-indicator">
-                <i class="fas fa-arrow-up-right-from-square"></i> Buka
-              </div>
-            </div>
-          </a>
-        </li>
-      `;
-    });
+    renderPedoman();
   })
   .catch(err => {
     loading.innerHTML = "❌ Gagal memuat data";
